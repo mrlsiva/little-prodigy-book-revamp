@@ -73,49 +73,54 @@
                         </a>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-3 mb-4">
-                            <div class="card category-card h-100 shadow">
-                                <img src="{{ $category->image_url }}" class="card-img-top" alt="{{ $category->name }}" style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $category->name }}</h5>
-                                    <p class="card-text text-muted">{{ Str::limit($category->description, 80) }}</p>
-                                    <a href="{{ route('category.products', $category->id) }}" class="btn btn-primary">Browse Books</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-9">
-                            <div class="row">
-                                @foreach($category->products->take(8) as $product)
-                                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                                        <div class="card product-card h-100 shadow-sm">
-                                            <img src="{{ $product->image_url }}" class="card-img-top" alt="{{ $product->name }}" style="height: 180px; object-fit: cover;">
-                                            <div class="card-body p-3">
-                                                <h6 class="card-title">{{ Str::limit($product->name, 30) }}</h6>
-                                                @if($product->author)
-                                                    <small class="text-muted">by {{ $product->author }}</small>
-                                                @endif
-                                                @if($product->price)
-                                                    <div class="text-primary fw-bold">${{ $product->price }}</div>
-                                                @endif
-                                                <a href="{{ route('product.detail', $product->id) }}" class="btn btn-sm btn-outline-primary mt-2">View Details</a>
-                                            </div>
+                    @if($category->products->count() > 0)
+                        <div id="productCarousel{{ $category->id }}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                @php
+                                    $chunks = $category->products->chunk(4);
+                                @endphp
+                                @foreach($chunks as $chunkIndex => $chunk)
+                                    <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
+                                        <div class="row">
+                                            @foreach($chunk as $product)
+                                                <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                                                    <div class="card product-card h-100 shadow-sm">
+                                                        <img src="{{ $product->image_url }}" class="card-img-top" alt="{{ $product->name }}" style="height: 220px; object-fit: cover;">
+                                                        <div class="card-body p-3">
+                                                            <h6 class="card-title">{{ Str::limit($product->name, 35) }}</h6>
+                                                            @if($product->author)
+                                                                <small class="text-muted d-block mb-2">by {{ $product->author }}</small>
+                                                            @endif
+                                                            @if($product->price)
+                                                                <div class="text-primary fw-bold mb-2">${{ $product->price }}</div>
+                                                            @endif
+                                                            <a href="{{ route('product.detail', $product->id) }}" class="btn btn-sm btn-outline-primary w-100">View Details</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
                                     </div>
                                 @endforeach
-
-                                @if($category->products->count() == 0)
-                                    <div class="col-12">
-                                        <div class="text-center text-muted py-4">
-                                            <i class="fas fa-book fa-3x mb-3"></i>
-                                            <p>No books available in this category yet.</p>
-                                        </div>
-                                    </div>
-                                @endif
                             </div>
+                            
+                            @if($chunks->count() > 1)
+                                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel{{ $category->id }}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel{{ $category->id }}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            @endif
                         </div>
-                    </div>
+                    @else
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-book fa-3x mb-3"></i>
+                            <p>No books available in this category yet.</p>
+                        </div>
+                    @endif
                 </div>
             @endforeach
         </div>
@@ -197,38 +202,73 @@ $(document).ready(function() {
         let productsHtml = '';
         
         if (category.products && category.products.length > 0) {
-            category.products.forEach(function(product) {
-                const productName = product.name.length > 30 ? product.name.substring(0, 30) + '...' : product.name;
-                const authorInfo = product.author ? `<small class="text-muted">by ${product.author}</small>` : '';
-                const priceInfo = product.price ? `<div class="text-primary fw-bold">$${product.price}</div>` : '';
+            // Create product chunks for carousel
+            const productChunks = [];
+            for (let i = 0; i < category.products.length; i += 4) {
+                productChunks.push(category.products.slice(i, i + 4));
+            }
+
+            productChunks.forEach(function(chunk, chunkIndex) {
+                const activeClass = chunkIndex === 0 ? 'active' : '';
+                let chunkHtml = `<div class="carousel-item ${activeClass}"><div class="row">`;
                 
-                productsHtml += `
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                        <div class="card product-card h-100 shadow-sm">
-                            <img src="${product.image_url || '/images/no-image.jpg'}" class="card-img-top" alt="${product.name}" style="height: 180px; object-fit: cover;">
-                            <div class="card-body p-3">
-                                <h6 class="card-title">${productName}</h6>
-                                ${authorInfo}
-                                ${priceInfo}
-                                <a href="/product/${product.id}" class="btn btn-sm btn-outline-primary mt-2">View Details</a>
+                chunk.forEach(function(product) {
+                    const productName = product.name.length > 35 ? product.name.substring(0, 35) + '...' : product.name;
+                    const authorInfo = product.author ? `<small class="text-muted d-block mb-2">by ${product.author}</small>` : '';
+                    const priceInfo = product.price ? `<div class="text-primary fw-bold mb-2">$${product.price}</div>` : '';
+                    
+                    chunkHtml += `
+                        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                            <div class="card product-card h-100 shadow-sm">
+                                <img src="${product.image_url || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='}" class="card-img-top" alt="${product.name}" style="height: 220px; object-fit: cover;">
+                                <div class="card-body p-3">
+                                    <h6 class="card-title">${productName}</h6>
+                                    ${authorInfo}
+                                    ${priceInfo}
+                                    <a href="/product/${product.id}" class="btn btn-sm btn-outline-primary w-100">View Details</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                });
+                
+                chunkHtml += '</div></div>';
+                productsHtml += chunkHtml;
             });
+
+            // Create carousel controls if more than one slide
+            let carouselControls = '';
+            if (productChunks.length > 1) {
+                carouselControls = `
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel${category.id}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel${category.id}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                `;
+            }
+
+            productsHtml = `
+                <div id="productCarousel${category.id}" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        ${productsHtml}
+                    </div>
+                    ${carouselControls}
+                </div>
+            `;
         } else {
             productsHtml = `
-                <div class="col-12">
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-book fa-3x mb-3"></i>
-                        <p>No books available in this category yet.</p>
-                    </div>
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-book fa-3x mb-3"></i>
+                    <p>No books available in this category yet.</p>
                 </div>
             `;
         }
 
         const ageCategory = category.age_category ? `<small class="text-muted">(${category.age_category})</small>` : '';
-        const description = category.description ? (category.description.length > 80 ? category.description.substring(0, 80) + '...' : category.description) : '';
 
         return `
             <div class="category-section mb-5" data-category-id="${category.id}">
@@ -241,23 +281,7 @@ $(document).ready(function() {
                         View All <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
-                <div class="row">
-                    <div class="col-md-3 mb-4">
-                        <div class="card category-card h-100 shadow">
-                            <img src="${category.image_url || '/images/no-image.jpg'}" class="card-img-top" alt="${category.name}" style="height: 200px; object-fit: cover;">
-                            <div class="card-body">
-                                <h5 class="card-title">${category.name}</h5>
-                                <p class="card-text text-muted">${description}</p>
-                                <a href="/category/${category.id}" class="btn btn-primary">Browse Books</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-9">
-                        <div class="row">
-                            ${productsHtml}
-                        </div>
-                    </div>
-                </div>
+                ${productsHtml}
             </div>
         `;
     }
