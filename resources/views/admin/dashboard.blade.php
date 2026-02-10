@@ -7,7 +7,11 @@
 <!-- Statistics Cards -->
 <div class="row mb-4">
     <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stats-card">
+        <!-- Skeleton Loader -->
+        <div class="skeleton-stats stats-skeleton" style="display: none;"></div>
+        
+        <!-- Actual Stats Card -->
+        <div class="stats-card stats-content">
             <div class="d-flex justify-content-between">
                 <div>
                     <h3 class="text-primary">{{ $totalCategories }}</h3>
@@ -24,7 +28,11 @@
     </div>
 
     <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stats-card">
+        <!-- Skeleton Loader -->
+        <div class="skeleton-stats stats-skeleton" style="display: none;"></div>
+        
+        <!-- Actual Stats Card -->
+        <div class="stats-card stats-content">
             <div class="d-flex justify-content-between">
                 <div>
                     <h3 class="text-success">{{ $totalProducts }}</h3>
@@ -41,7 +49,11 @@
     </div>
 
     <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stats-card">
+        <!-- Skeleton Loader -->
+        <div class="skeleton-stats stats-skeleton" style="display: none;"></div>
+        
+        <!-- Actual Stats Card -->
+        <div class="stats-card stats-content">
             <div class="d-flex justify-content-between">
                 <div>
                     <h3 class="text-warning">{{ $outOfStockProducts }}</h3>
@@ -58,7 +70,11 @@
     </div>
 
     <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stats-card">
+        <!-- Skeleton Loader -->
+        <div class="skeleton-stats stats-skeleton" style="display: none;"></div>
+        
+        <!-- Actual Stats Card -->
+        <div class="stats-card stats-content">
             <div class="d-flex justify-content-between">
                 <div>
                     <h3 class="text-info">{{ $totalProducts - $outOfStockProducts }}</h3>
@@ -77,33 +93,79 @@
 
 <!-- Quick Actions -->
 <div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+    
+
+    <!-- Category Management -->
+    <div class="col-lg-3 mb-3">
+        <div class="card h-100">
+            <div class="card-header" style="background-color: #17a2b8; color: white;">
+                <h6 class="mb-0"><i class="fas fa-folder me-2"></i>Category Management</h6>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3 mb-3">
-                        <a href="{{ route('admin.categories.create') }}" class="btn btn-primary w-100">
-                            <i class="fas fa-plus me-2"></i>Add Category
-                        </a>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <a href="{{ route('admin.products.create') }}" class="btn btn-success w-100">
-                            <i class="fas fa-plus me-2"></i>Add Product
-                        </a>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <a href="{{ route('admin.categories.index') }}" class="btn btn-info w-100">
-                            <i class="fas fa-list me-2"></i>Manage Categories
-                        </a>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <a href="{{ route('admin.products.index') }}" class="btn btn-warning w-100">
-                            <i class="fas fa-list me-2"></i>Manage Products
-                        </a>
-                    </div>
+                <div class="d-grid gap-2">
+                    <a href="{{ route('admin.categories.create') }}" class="btn btn-info">
+                        <i class="fas fa-plus me-2"></i>Add New Category
+                    </a>
+                    <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-info">
+                        <i class="fas fa-list me-2"></i>Manage Categories
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Management -->
+    <div class="col-lg-3 mb-3">
+        <div class="card h-100">
+            <div class="card-header" style="background-color: #28a745; color: white;">
+                <h6 class="mb-0"><i class="fas fa-book me-2"></i>Product Management</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ route('admin.products.create') }}" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Add New Product
+                    </a>
+                    <a href="{{ route('admin.products.index') }}" class="btn btn-outline-success">
+                        <i class="fas fa-list me-2"></i>Manage Products
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner Management -->
+    <div class="col-lg-3 mb-3">
+        <div class="card h-100">
+            <div class="card-header" style="background-color: #e43750; color: white;">
+                <h6 class="mb-0"><i class="fas fa-images me-2"></i>Banner Management</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ route('admin.banners.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Add New Banner
+                    </a>
+                    <a href="{{ route('admin.banners.index') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-list me-2"></i>Manage Banners
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Distribution Management -->
+    <div class="col-lg-3 mb-3">
+        <div class="card h-100">
+            <div class="card-header" style="background-color: #6c757d; color: white;">
+                <h6 class="mb-0"><i class="fas fa-truck me-2"></i>Distribution Management</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ route('admin.distributors.create') }}" class="btn btn-dark">
+                        <i class="fas fa-plus me-2"></i>Add New Distributor
+                    </a>
+                    <a href="{{ route('admin.distributors.index') }}" class="btn btn-outline-dark">
+                        <i class="fas fa-list me-2"></i>Manage Distributors
+                    </a>
                 </div>
             </div>
         </div>
@@ -205,4 +267,26 @@
     </div>
 </div>
 @endif
+@endsection
+
+@section('scripts')
+<script>
+$(document).ready(function() {
+    // Initialize skeleton loaders for admin dashboard
+    initializeSkeletonLoaders();
+    
+    function initializeSkeletonLoaders() {
+        // Show skeleton loaders initially
+        $('.stats-skeleton').show();
+        $('.stats-content').hide();
+        
+        // Show stats content after a brief delay to simulate loading
+        setTimeout(() => {
+            $('.stats-skeleton').fadeOut(300, function() {
+                $('.stats-content').fadeIn(300);
+            });
+        }, 800);
+    }
+});
+</script>
 @endsection

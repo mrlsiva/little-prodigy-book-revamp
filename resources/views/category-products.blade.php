@@ -38,9 +38,26 @@
         <div class="row">
             @foreach($category->products as $product)
                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
-                    <div class="card product-card h-100 shadow-sm">
+                    <!-- Skeleton Loader -->
+                    <div class="card skeleton-card h-100 shadow-sm skeleton-loader" style="display: none;">
+                        <div class="skeleton-image" style="height: 250px;"></div>
+                        <div class="card-body p-3">
+                            <div class="skeleton-text skeleton-text-lg"></div>
+                            <div class="skeleton-text skeleton-text-sm" style="width: 70%;"></div>
+                            <div class="skeleton-text" style="width: 90%;"></div>
+                            <div class="skeleton-text" style="width: 60%;"></div>
+                            <div class="skeleton-text skeleton-text-sm" style="width: 40%;"></div>
+                            <div class="d-flex gap-2 mt-3">
+                                <div class="skeleton-button" style="width: 50%;"></div>
+                                <div class="skeleton-button" style="width: 50%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Actual Card -->
+                    <div class="card product-card h-100 shadow-sm product-card-content">
                         <div class="position-relative">
-                            <img src="{{ $product->image_url }}" class="card-img-top" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;">
+                            <img src="{{ $product->image_url }}" class="card-img-top product-image" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;" data-product-id="{{ $product->id }}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjI1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIiBzdHJva2U9IiNlMmU4ZjAiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNDAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5OCPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNjUlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Cb29rIEltYWdlPC90ZXh0Pjwvc3ZnPg=='; this.onerror=null;">
                             @if($product->stock <= 0)
                                 <div class="position-absolute top-0 end-0 m-2">
                                     <span class="badge bg-danger">Out of Stock</span>
@@ -74,9 +91,6 @@
                                     <a href="{{ route('product.detail', $product->id) }}" class="btn btn-outline-primary btn-sm">
                                         View Details
                                     </a>
-                                    @if($product->stock > 0)
-                                        <button class="btn btn-primary btn-sm">Add to Cart</button>
-                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -128,4 +142,71 @@
         </div>
     @endif
 </div>
+@endsection
+
+@section('scripts')
+<script>
+$(document).ready(function() {
+    // Initialize skeleton loaders for category products
+    initializeSkeletonLoaders();
+    
+    function initializeSkeletonLoaders() {
+        // Show skeleton loaders initially
+        $('.skeleton-loader').show();
+        $('.product-card-content').hide();
+        
+        // Handle image loading for product cards
+        $('.product-image').each(function() {
+            const img = this;
+            const $cardContainer = $(img).closest('.col-xl-3, .col-lg-4, .col-md-6, .col-sm-6');
+            const $skeletonLoader = $cardContainer.find('.skeleton-loader');
+            const $productContent = $cardContainer.find('.product-card-content');
+            
+            // Set default placeholder for error cases
+            const defaultPlaceholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjI1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIiBzdHJva2U9IiNlMmU4ZjAiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNDAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5OCPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNjUlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Cb29rIEltYWdlPC90ZXh0Pjwvc3ZnPg==';
+            
+            if (img.complete) {
+                // Image already loaded successfully
+                if (img.naturalWidth > 0) {
+                    setTimeout(() => {
+                        $skeletonLoader.fadeOut(300, function() {
+                            $productContent.fadeIn(300);
+                        });
+                    }, 300);
+                } else {
+                    // Image failed to load initially
+                    img.src = defaultPlaceholder;
+                    setTimeout(() => {
+                        $skeletonLoader.fadeOut(300, function() {
+                            $productContent.fadeIn(300);
+                        });
+                    }, 600);
+                }
+            } else {
+                // Listen for image load
+                $(img).on('load', function() {
+                    setTimeout(() => {
+                        $skeletonLoader.fadeOut(300, function() {
+                            $productContent.fadeIn(300);
+                        });
+                    }, 500); // Minimum skeleton display time
+                });
+                
+                // Handle image error with placeholder
+                $(img).on('error', function() {
+                    // Set placeholder image
+                    img.src = defaultPlaceholder;
+                    
+                    // Keep skeleton visible longer for error state
+                    setTimeout(() => {
+                        $skeletonLoader.fadeOut(300, function() {
+                            $productContent.fadeIn(300);
+                        });
+                    }, 800); // Longer delay for error state
+                });
+            }
+        });
+    }
+});
+</script>
 @endsection

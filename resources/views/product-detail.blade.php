@@ -17,7 +17,13 @@
         <div class="col-lg-5">
             <!-- Product Image -->
             <div class="card shadow">
-                <img src="{{ $product->image_url }}" class="card-img-top" alt="{{ $product->name }}" style="height: 500px; object-fit: cover;">
+                <!-- Skeleton Loader for Product Detail Image -->
+                <div class="skeleton-loader" style="display: none;">
+                    <div class="skeleton-image" style="height: 500px;"></div>
+                </div>
+                
+                <!-- Actual Image -->
+                <img src="{{ $product->image_url }}" class="card-img-top product-detail-image" alt="{{ $product->name }}" style="height: 500px; object-fit: cover;" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIiBzdHJva2U9IiNlMmU4ZjAiIHN0cm9rZS13aWR0aD0iMyIvPjx0ZXh0IHg9IjUwJSIgeT0iNDAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5OCPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNjAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Qcm9kdWN0IEltYWdlPC90ZXh0Pjwvc3ZnPg=='; this.onerror=null;">
             </div>
         </div>
 
@@ -114,19 +120,6 @@
                         <p class="text-muted">{{ $product->additional_info }}</p>
                     </div>
                 @endif
-
-                <!-- Action Buttons -->
-                <div class="d-flex gap-3">
-                    @if($product->stock > 0)
-                        <button class="btn btn-primary btn-lg">Add to Cart</button>
-                        <button class="btn btn-outline-primary btn-lg">Buy Now</button>
-                    @else
-                        <button class="btn btn-secondary btn-lg" disabled>Out of Stock</button>
-                    @endif
-                    <button class="btn btn-outline-secondary btn-lg">
-                        <i class="fas fa-heart"></i> Wishlist
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -157,4 +150,66 @@
         </div>
     @endif
 </div>
+@endsection
+
+@section('scripts')
+<script>
+$(document).ready(function() {
+    // Initialize skeleton loader for product detail image
+    initializeProductDetailSkeleton();
+    
+    function initializeProductDetailSkeleton() {
+        const $productImage = $('.product-detail-image');
+        const $skeletonLoader = $('.skeleton-loader');
+        
+        // Show skeleton initially
+        $skeletonLoader.show();
+        $productImage.hide();
+        
+        // Set default placeholder for error cases
+        const defaultPlaceholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIiBzdHJva2U9IiNlMmU4ZjAiIHN0cm9rZS13aWR0aD0iMyIvPjx0ZXh0IHg9IjUwJSIgeT0iNDAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5SCPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNjAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Qcm9kdWN0IEltYWdlPC90ZXh0Pjwvc3ZnPg==';
+        
+        if ($productImage[0].complete) {
+            // Image already loaded successfully
+            if ($productImage[0].naturalWidth > 0) {
+                setTimeout(() => {
+                    $skeletonLoader.fadeOut(300, function() {
+                        $productImage.fadeIn(300);
+                    });
+                }, 300);
+            } else {
+                // Image failed to load initially
+                $productImage[0].src = defaultPlaceholder;
+                setTimeout(() => {
+                    $skeletonLoader.fadeOut(300, function() {
+                        $productImage.fadeIn(300);
+                    });
+                }, 600);
+            }
+        } else {
+            // Listen for image load
+            $productImage.on('load', function() {
+                setTimeout(() => {
+                    $skeletonLoader.fadeOut(300, function() {
+                        $productImage.fadeIn(300);
+                    });
+                }, 500); // Minimum skeleton display time
+            });
+            
+            // Handle image error with placeholder
+            $productImage.on('error', function() {
+                // Set placeholder image
+                this.src = defaultPlaceholder;
+                
+                // Keep skeleton visible longer for error state
+                setTimeout(() => {
+                    $skeletonLoader.fadeOut(300, function() {
+                        $productImage.fadeIn(300);
+                    });
+                }, 800); // Longer delay for error state
+            });
+        }
+    }
+});
+</script>
 @endsection

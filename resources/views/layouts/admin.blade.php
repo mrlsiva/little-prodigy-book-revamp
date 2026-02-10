@@ -9,69 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
-    <style>
-        .sidebar {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            transition: all 0.3s ease;
-        }
-        
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            color: white;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-        }
-        
-        .main-content {
-            background-color: #f8f9fa;
-            min-height: 100vh;
-        }
-        
-        .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-        
-        .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px 15px 0 0 !important;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-            transform: translateY(-1px);
-        }
-        
-        .table th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #667eea;
-        }
-        
-        .stats-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .stats-card:hover {
-            transform: translateY(-5px);
-        }
-    </style>
+    <!-- Custom CSS -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     @yield('styles')
 </head>
@@ -81,7 +20,7 @@
             <!-- Sidebar -->
             <div class="col-md-3 col-lg-2 sidebar p-4">
                 <div class="text-center mb-4">
-                    <h4><i class="fas fa-book-open"></i> Little Prodigy</h4>
+                    <img src="{{ asset('images/logo.png') }}" alt="Little Prodigy" height="50" class="mb-2">
                     <p class="mb-0">Admin Panel</p>
                 </div>
                 
@@ -89,6 +28,7 @@
                     <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
                         <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                     </a>
+                    <hr class="my-3">
                     
                     <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}" href="{{ route('admin.categories.index') }}">
                         <i class="fas fa-folder me-2"></i> Categories
@@ -96,6 +36,15 @@
                     
                     <a class="nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}" href="{{ route('admin.products.index') }}">
                         <i class="fas fa-book me-2"></i> Products
+                    </a>
+                    <hr class="my-3">
+                    
+                    <a class="nav-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}" href="{{ route('admin.banners.index') }}">
+                        <i class="fas fa-images me-2"></i> Home Banners
+                    </a>
+
+                    <a class="nav-link {{ request()->routeIs('admin.distributors.*') ? 'active' : '' }}" href="{{ route('admin.distributors.index') }}">
+                        <i class="fas fa-truck me-2"></i> Distributors
                     </a>
                     
                     <hr class="my-3">

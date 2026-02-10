@@ -29,6 +29,6 @@ class Category extends Model
         if ($this->image) {
             return asset('storage/categories/' . $this->image);
         }
-        return asset('images/no-image.jpg');
+        return asset('images/no-image.svg');
     }
 }

@@ -44,7 +44,7 @@ class Product extends Model
         if ($this->image) {
             return asset('storage/products/' . $this->image);
         }
-        return asset('images/no-image.jpg');
+        return asset('images/no-image.svg');
     }
 
     public function scopeActive($query)

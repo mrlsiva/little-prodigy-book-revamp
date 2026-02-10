@@ -1,11 +1,454 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/* Global CSS Variables */
+:root {
+    --primary-color: #e43750;
+    --secondary-color: #ffffff;
+    --primary-rgb: 228, 55, 80;
+    --secondary-rgb: 255, 255, 255;
+}
+
+/* Global Styles */
+* {
+    --primary: var(--primary-color);
+    --secondary: var(--secondary-color);
+}
+
+/* 
+Usage Examples:
+1. CSS Variables:
+   - color: var(--primary-color);
+   - background-color: var(--secondary-color); 
+   - border: 1px solid var(--primary-color);
+   - box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.3);
+
+2. Custom CSS Classes (available globally):
+   - .text-primary-theme
+   - .bg-primary-theme  
+   - .text-secondary-theme
+   - .bg-secondary-theme
+   - .border-primary-theme
+   - .btn-theme-primary
+   - .btn-outline-theme-primary
+
+3. Tailwind Classes (available with primary-* scale):
+   - text-primary-500, bg-primary-500 (main color)
+   - text-primary-600, bg-primary-600 (darker)
+   - text-primary-400, bg-primary-400 (lighter)
+   - And all other primary-50 through primary-950 variants
+*/
+
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+
+    /* Theme Colors Integration with Tailwind */
+    --color-primary-50: color-mix(in srgb, #e43750 5%, #fff);
+    --color-primary-100: color-mix(in srgb, #e43750 10%, #fff);
+    --color-primary-200: color-mix(in srgb, #e43750 25%, #fff);
+    --color-primary-300: color-mix(in srgb, #e43750 40%, #fff);
+    --color-primary-400: color-mix(in srgb, #e43750 60%, #fff);
+    --color-primary-500: #e43750;
+    --color-primary-600: color-mix(in srgb, #e43750 90%, #000);
+    --color-primary-700: color-mix(in srgb, #e43750 75%, #000);
+    --color-primary-800: color-mix(in srgb, #e43750 60%, #000);
+    --color-primary-900: color-mix(in srgb, #e43750 40%, #000);
+    --color-primary-950: color-mix(in srgb, #e43750 20%, #000);
+
+    --color-secondary: #fff;
+}
+
+/* =================================
+   NAVIGATION STYLES
+   ================================= */
+.navbar-brand {
+    font-weight: bold;
+    color: var(--primary-color) !important;
+}
+
+/* Fix for Bootstrap collapse conflict */
+.navbar-collapse {
+    visibility: visible !important;
+}
+
+/* Let Bootstrap handle nav-link styling naturally */
+.navbar-nav .nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* =================================
+   CARD STYLES
+   ================================= */
+.category-card {
+    transition: transform 0.3s ease;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-card {
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 10px;
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* =================================
+   CAROUSEL STYLES
+   ================================= */
+.carousel-item img {
+    height: 500px;
+    object-fit: cover;
+}
+
+/* Minimal Carousel Controls */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 32px !important;
+    height: 32px !important;
+    top: 50% !important;
+    transform: translateY(-50%);
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.carousel-control-prev {
+    left: 15px;
+}
+
+.carousel-control-next {
+    right: 15px;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    width: 32px;
+    height: 32px;
+    background-size: 16px 16px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* =================================
+   FOOTER STYLES
+   ================================= */
+.footer {
+    background: #1a1a1a;
+    color: var(--secondary-color);
+    padding: 40px 0;
+}
+
+.footer h5 {
+    color: var(--secondary-color) !important;
+}
+
+.footer p {
+    color: var(--secondary-color) !important;
+}
+
+.footer a {
+    color: var(--secondary-color) !important;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.footer a:hover {
+    color: var(--secondary-color) !important;
+    opacity: 0.8;
+}
+
+.footer hr {
+    border-color: rgba(var(--secondary-rgb), 0.3);
+}
+
+/* =================================
+   BUTTON STYLES
+   ================================= */
+.btn-primary {
+    background: var(--primary-color);
+    border: none;
+    color: var(--secondary-color);
+}
+
+.btn-primary:hover {
+    background: color-mix(in srgb, var(--primary-color) 85%, #000);
+    color: var(--secondary-color);
+    transform: translateY(-1px);
+}
+
+.btn-theme-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.btn-theme-primary:hover,
+.btn-theme-primary:focus,
+.btn-theme-primary:active {
+    background-color: color-mix(in srgb, var(--primary-color) 85%, #000);
+    border-color: color-mix(in srgb, var(--primary-color) 85%, #000);
+    color: var(--secondary-color);
+}
+
+.btn-outline-theme-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-theme-primary:hover,
+.btn-outline-theme-primary:focus,
+.btn-outline-theme-primary:active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+/* =================================
+   CATEGORY SLIDER
+   ================================= */
+.category-slider {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 20px 0;
+}
+
+.category-slider::-webkit-scrollbar {
+    height: 8px;
+}
+
+.category-slider::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.category-slider::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+/* =================================
+   LOADING STATES
+   ================================= */
+.loading-spinner {
+    display: none;
+}
+
+/* =================================
+   SKELETON LOADERS
+   ================================= */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-card {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.skeleton-image {
+    height: 220px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e0 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-text {
+    height: 16px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e0 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.skeleton-text-sm {
+    height: 12px;
+}
+
+.skeleton-text-lg {
+    height: 20px;
+}
+
+.skeleton-button {
+    height: 32px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e0 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 6px;
+}
+
+.skeleton-stats {
+    height: 100px;
+    background: linear-gradient(90deg, #f8fafc 25%, #e2e8f0 50%, #f8fafc 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 15px;
+}
+
+.skeleton-table-row {
+    height: 60px;
+    background: linear-gradient(90deg, #f8fafc 25%, #e2e8f0 50%, #f8fafc 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.skeleton-form {
+    background: linear-gradient(90deg, #f8fafc 25%, #e2e8f0 50%, #f8fafc 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* =================================
+   FALLBACK IMAGE STYLES
+   ================================= */
+.fallback-image {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8e9ba8;
+    font-style: italic;
+}
+
+.fallback-image::before {
+    content: "📚";
+    font-size: 2rem;
+    margin-right: 8px;
+}
+
+/* =================================
+   THEME UTILITY CLASSES
+   ================================= */
+.text-primary-theme {
+    color: var(--primary-color) !important;
+}
+
+.bg-primary-theme {
+    background-color: var(--primary-color) !important;
+}
+
+.text-secondary-theme {
+    color: var(--secondary-color) !important;
+}
+
+.bg-secondary-theme {
+    background-color: var(--secondary-color) !important;
+}
+
+.border-primary-theme {
+    border-color: var(--primary-color) !important;
+}
+
+.text-theme-primary {
+    color: var(--primary-color) !important;
+}
+
+.bg-theme-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.border-theme-primary {
+    border-color: var(--primary-color) !important;
+}
+
+/* =================================
+   ADMIN LAYOUT STYLES
+   ================================= */
+.sidebar {
+    min-height: 100vh;
+    background: linear-gradient(
+        135deg,
+        var(--primary-color) 0%,
+        color-mix(in srgb, var(--primary-color) 80%, #000) 100%
+    );
+    color: var(--secondary-color);
+}
+
+.sidebar .nav-link {
+    color: rgba(var(--secondary-rgb), 0.8);
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    color: var(--secondary-color);
+    background-color: rgba(var(--secondary-rgb), 0.1);
+    border-radius: 5px;
+}
+
+.main-content {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background: linear-gradient(
+        135deg,
+        var(--primary-color) 0%,
+        color-mix(in srgb, var(--primary-color) 80%, #000) 100%
+    );
+    color: var(--secondary-color);
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.stats-card {
+    background: var(--secondary-color);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
 }
