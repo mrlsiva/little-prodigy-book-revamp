@@ -124,7 +124,7 @@
                                                                 <small class="text-muted d-block mb-2">by {{ $product->author }}</small>
                                                             @endif
                                                             @if($product->price)
-                                                                <div class="text-primary fw-bold mb-2">${{ $product->price }}</div>
+                                                                <div class="text-primary fw-bold mb-2">Rs {{ $product->price }}</div>
                                                             @endif
                                                             <a href="{{ route('product.detail', $product->id) }}" class="btn btn-sm btn-outline-primary w-100">View Details</a>
                                                         </div>
@@ -329,7 +329,7 @@ $(document).ready(function() {
                 chunk.forEach(function(product) {
                     const productName = product.name.length > 35 ? product.name.substring(0, 35) + '...' : product.name;
                     const authorInfo = product.author ? `<small class="text-muted d-block mb-2">by ${product.author}</small>` : '';
-                    const priceInfo = product.price ? `<div class="text-primary fw-bold mb-2">$${product.price}</div>` : '';
+                    const priceInfo = product.price ? `<div class="text-primary fw-bold mb-2">Rs ${product.price}</div>` : '';
                     
                     chunkHtml += `
                         <div class="col-lg-3 col-md-6 col-sm-6 mb-4">

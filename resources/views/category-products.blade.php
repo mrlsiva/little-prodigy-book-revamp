@@ -79,7 +79,7 @@
                             <div class="mt-auto">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     @if($product->price)
-                                        <span class="h5 text-primary mb-0">${{ $product->price }}</span>
+                                        <span class="h5 text-primary mb-0">Rs {{ $product->price }}</span>
                                     @endif
                                     
                                     @if($product->stock > 0)

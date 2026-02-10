@@ -92,6 +92,99 @@
         </div>
     </footer>
 
+    <!-- Floating Action Buttons -->
+    <div class="floating-buttons">
+        <!-- Catalogue Button -->
+        <a href="{{ asset('catalouge/Catalogue-2020.pdf') }}" target="_blank" class="floating-btn catalogue-btn">
+            <i class="fas fa-book me-2"></i>
+            <span>Catalogue</span>
+        </a>
+        
+        <!-- WhatsApp Button -->
+        <a href="https://wa.me/919011524939?text=Hi,%20I%20would%20like%20to%20know%20more%20about%20Little%20Prodigy%20Books" target="_blank" class="floating-btn whatsapp-btn">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <style>
+        .floating-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .floating-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border-radius: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .floating-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            text-decoration: none;
+        }
+
+        .catalogue-btn {
+            background: #495057;
+            color: white;
+            padding: 12px 16px;
+            min-width: 120px;
+        }
+
+        .catalogue-btn:hover {
+            background: #343a40;
+            color: white;
+        }
+
+        .whatsapp-btn {
+            background: #25d366;
+            color: white;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            font-size: 24px;
+        }
+
+        .whatsapp-btn:hover {
+            background: #128c7e;
+            color: white;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .floating-buttons {
+                bottom: 15px;
+                right: 15px;
+            }
+            
+            .floating-btn {
+                font-size: 13px;
+            }
+            
+            .catalogue-btn {
+                padding: 10px 14px;
+                min-width: 110px;
+            }
+            
+            .whatsapp-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+    </style>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

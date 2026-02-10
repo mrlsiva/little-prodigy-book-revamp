@@ -37,7 +37,7 @@
                 @endif
 
                 @if($product->price)
-                    <h3 class="text-primary mb-3">${{ $product->price }}</h3>
+                    <h3 class="text-primary mb-3">Rs {{ $product->price }}</h3>
                 @endif
 
                 @if($product->description)
@@ -139,7 +139,7 @@
                                     <small class="text-muted">by {{ $relatedProduct->author }}</small>
                                 @endif
                                 @if($relatedProduct->price)
-                                    <div class="text-primary fw-bold mt-2">${{ $relatedProduct->price }}</div>
+                                    <div class="text-primary fw-bold mt-2">Rs {{ $relatedProduct->price }}</div>
                                 @endif
                                 <a href="{{ route('product.detail', $relatedProduct->id) }}" class="btn btn-sm btn-outline-primary mt-2">View Details</a>
                             </div>

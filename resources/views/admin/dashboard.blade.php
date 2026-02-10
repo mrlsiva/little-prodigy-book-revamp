@@ -191,7 +191,7 @@
                                 </div>
                                 <div class="text-end">
                                     @if($product->price)
-                                        <div class="fw-bold text-primary">${{ $product->price }}</div>
+                                        <div class="fw-bold text-primary">Rs {{ $product->price }}</div>
                                     @endif
                                     <small class="text-muted">{{ $product->created_at->diffForHumans() }}</small>
                                 </div>

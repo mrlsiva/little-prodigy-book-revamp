@@ -55,7 +55,7 @@
                                 @if($product->price)
                                     <tr>
                                         <td><strong>Price:</strong></td>
-                                        <td><span class="h5 text-success">${{ $product->price }}</span></td>
+                                        <td><span class="h5 text-success">Rs {{ $product->price }}</span></td>
                                     </tr>
                                 @endif
                                 <tr>

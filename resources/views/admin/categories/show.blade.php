@@ -109,7 +109,7 @@
                                     <div class="card-body p-3">
                                         <h6 class="card-title">{{ Str::limit($product->name, 40) }}</h6>
                                         @if($product->price)
-                                            <p class="text-primary fw-bold">${{ $product->price }}</p>
+                                            <p class="text-primary fw-bold">Rs {{ $product->price }}</p>
                                         @endif
                                         <div class="d-flex gap-1">
                                             <a href="{{ route('admin.products.show', $product) }}" class="btn btn-sm btn-outline-info flex-fill">View</a>
