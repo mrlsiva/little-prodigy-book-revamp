@@ -64,6 +64,9 @@ class DatabaseSeeder extends Seeder
                 Product::create($productData);
             }
         }
+        
+        // Seed distributors
+        $this->call(DistributorSeeder::class);
     }
 
     private function getProductsForCategory($categoryName)
