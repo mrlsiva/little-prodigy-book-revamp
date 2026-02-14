@@ -47,6 +47,10 @@
                         <i class="fas fa-truck me-2"></i> Distributors
                     </a>
                     
+                    <a class="nav-link {{ request()->routeIs('admin.bulk.*') ? 'active' : '' }}" href="{{ route('admin.bulk.index') }}">
+                        <i class="fas fa-upload me-2"></i> Bulk Upload
+                    </a>
+                    
                     <hr class="my-3">
                     
                     <a class="nav-link" href="{{ route('home') }}" target="_blank">

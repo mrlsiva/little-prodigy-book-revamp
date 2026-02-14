@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\BannerController as AdminBannerController;
+use App\Http\Controllers\Admin\BulkController as AdminBulkController;
 
 // Frontend Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -40,4 +41,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('distributors/{distributor}/edit', [DistributorController::class, 'edit'])->name('distributors.edit');
     Route::put('distributors/{distributor}', [DistributorController::class, 'update'])->name('distributors.update');
     Route::delete('distributors/{distributor}', [DistributorController::class, 'destroy'])->name('distributors.destroy');
+    
+    // Bulk Upload
+    Route::get('bulk', [AdminBulkController::class, 'index'])->name('bulk.index');
+    Route::post('bulk/categories', [AdminBulkController::class, 'uploadCategories'])->name('bulk.categories.upload');
+    Route::post('bulk/products', [AdminBulkController::class, 'uploadProducts'])->name('bulk.products.upload');
+    Route::get('bulk/template/{type}', [AdminBulkController::class, 'downloadTemplate'])->name('bulk.template.download');
+    Route::get('bulk/export/categories', [AdminBulkController::class, 'exportCategories'])->name('bulk.export.categories');
+    Route::get('bulk/export/products', [AdminBulkController::class, 'exportProducts'])->name('bulk.export.products');
 });

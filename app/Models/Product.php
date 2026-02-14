@@ -22,6 +22,8 @@ class Product extends Model
         'graphics',
         'stock',
         'sku',
+        'isbn',
+        'publication_year',
         'price',
         'image',
         'is_active'
