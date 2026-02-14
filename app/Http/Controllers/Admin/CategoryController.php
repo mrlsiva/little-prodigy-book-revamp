@@ -9,9 +9,30 @@ use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::withCount('products')->paginate(10);
+        $query = Category::withCount('products');
+
+        // Handle search
+        if ($search = $request->get('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%')
+                  ->orWhere('age_category', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Handle per page
+        $perPage = $request->get('per_page', 15);
+        if (!in_array($perPage, [15, 25, 50, 100])) {
+            $perPage = 15;
+        }
+
+        $categories = $query->latest()->paginate($perPage)->appends([
+            'search' => $search,
+            'per_page' => $perPage,
+        ]);
+
         return view('admin.categories.index', compact('categories'));
     }
 

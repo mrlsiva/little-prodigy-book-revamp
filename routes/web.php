@@ -46,7 +46,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('bulk', [AdminBulkController::class, 'index'])->name('bulk.index');
     Route::post('bulk/categories', [AdminBulkController::class, 'uploadCategories'])->name('bulk.categories.upload');
     Route::post('bulk/products', [AdminBulkController::class, 'uploadProducts'])->name('bulk.products.upload');
+    Route::post('bulk/distributors', [AdminBulkController::class, 'uploadDistributors'])->name('bulk.distributors.upload');
     Route::get('bulk/template/{type}', [AdminBulkController::class, 'downloadTemplate'])->name('bulk.template.download');
     Route::get('bulk/export/categories', [AdminBulkController::class, 'exportCategories'])->name('bulk.export.categories');
     Route::get('bulk/export/products', [AdminBulkController::class, 'exportProducts'])->name('bulk.export.products');
+    Route::get('bulk/export/distributors', [AdminBulkController::class, 'exportDistributors'])->name('bulk.export.distributors');
 });

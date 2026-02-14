@@ -441,7 +441,7 @@ document.addEventListener('DOMContentLoaded', function() {
 /* Banner Styling */
 .carousel-item {
     position: relative;
-    min-height: 500px;
+    /* min-height: 500px; */
 }
 
 /* Background overlay for better text readability */

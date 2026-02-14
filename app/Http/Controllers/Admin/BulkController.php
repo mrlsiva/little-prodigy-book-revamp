@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Distributor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -16,13 +17,17 @@ class BulkController extends Controller
     /**
      * Display the bulk upload page
      */
-    public function index()
+    public function index(Request $request)
     {
         $categories = Category::all();
         $totalProducts = Product::count();
         $totalCategories = Category::count();
+        $totalDistributors = Distributor::count();
         
-        return view('admin.bulk.index', compact('categories', 'totalProducts', 'totalCategories'));
+        // Pagination for recent uploads (you can track uploads in a separate table)
+        $recentUploads = collect([]); // Placeholder for upload history
+        
+        return view('admin.bulk.index', compact('categories', 'totalProducts', 'totalCategories', 'totalDistributors', 'recentUploads'));
     }
 
     /**
@@ -167,6 +172,70 @@ class BulkController extends Controller
     }
 
     /**
+     * Handle bulk distributor upload
+     */
+    public function uploadDistributors(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'distributor_file' => 'required|file|mimes:xlsx,xls,csv,txt|mimetypes:text/csv,text/plain,application/csv,text/comma-separated-values,application/excel,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel.sheet.macroEnabled.12|max:2048'
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        try {
+            $file = $request->file('distributor_file');
+            
+            $spreadsheet = IOFactory::load($file->getPathname());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $data = $worksheet->toArray();
+            
+            // Skip header row
+            array_shift($data);
+            
+            $successCount = 0;
+            $errorCount = 0;
+            $errors = [];
+
+            DB::beginTransaction();
+
+            foreach ($data as $index => $row) {
+                if (empty($row[0])) continue; // Skip empty rows
+                
+                try {
+                    Distributor::create([
+                        'company' => $row[0],
+                        'contact_person' => $row[1],
+                        'contact_information' => $row[2],
+                        'email_id' => $row[3],
+                        'city' => $row[4],
+                        'state_wise_distribution' => $row[5],
+                    ]);
+                    $successCount++;
+                } catch (Exception $e) {
+                    $errorCount++;
+                    $errors[] = "Row " . ($index + 2) . ": " . $e->getMessage();
+                }
+            }
+
+            DB::commit();
+
+            $message = "Distributors uploaded successfully. Success: {$successCount}, Errors: {$errorCount}";
+            
+            if (!empty($errors)) {
+                $message .= "\nErrors:\n" . implode("\n", array_slice($errors, 0, 10));
+            }
+
+            return back()->with('success', $message);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error uploading distributors: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Download sample template files
      */
     public function downloadTemplate($type)
@@ -186,6 +255,14 @@ class BulkController extends Controller
                 'sample_data' => [
                     ['Sample Book 1', 'This is a sample book description', 'Additional information about the book', '29.99', '3-5 years', 'Learn to Read', '32', 'Little Prodigy', 'John Doe', 'English', '2024', 'Full Color', '10', 'LP001', '978-1234567890', '2024', '', 'Yes'],
                     ['Sample Book 2', 'Another sample book description', 'More additional information', '35.50', '6-8 years', 'Adventure Series', '48', 'Little Prodigy', 'Jane Smith', 'English', '2024', 'Black & White', '15', 'LP002', '978-0987654321', '2024', '', 'Yes'],
+                ]
+            ],
+            'distributors' => [
+                'filename' => 'distributors_template.csv',
+                'headers' => ['Company', 'Contact Person', 'Contact Information', 'Email ID', 'City', 'State Wise Distribution'],
+                'sample_data' => [
+                    ['ABC Books Distribution', 'John Smith', '+1-555-0123', 'john@abcbooks.com', 'New York', 'NY, NJ, CT'],
+                    ['XYZ Educational Supply', 'Mary Johnson', '+1-555-0456', 'mary@xyzedu.com', 'Los Angeles', 'CA, NV, AZ'],
                 ]
             ]
         ];
@@ -310,6 +387,44 @@ class BulkController extends Controller
                     $product->publication_year,
                     $product->image,
                     $product->is_active ? 'Yes' : 'No'
+                ]);
+            }
+            
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export existing distributors to CSV
+     */
+    public function exportDistributors()
+    {
+        $distributors = Distributor::all();
+        
+        $filename = 'distributors_export_' . date('Y-m-d_H-i-s') . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+
+        $callback = function() use ($distributors) {
+            $file = fopen('php://output', 'w');
+            
+            // Write headers
+            fputcsv($file, ['Company', 'Contact Person', 'Contact Information', 'Email ID', 'City', 'State Wise Distribution']);
+            
+            // Write data
+            foreach ($distributors as $distributor) {
+                fputcsv($file, [
+                    $distributor->company,
+                    $distributor->contact_person,
+                    $distributor->contact_information,
+                    $distributor->email_id,
+                    $distributor->city,
+                    $distributor->state_wise_distribution
                 ]);
             }
             

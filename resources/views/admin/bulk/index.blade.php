@@ -65,7 +65,12 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Bulk Upload</h1>
+    <h1>Bulk Upload Management</h1>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="refreshStats()">
+            <i class="fas fa-sync-alt me-1"></i>Refresh Stats
+        </button>
+    </div>
 </div>
 
 <!-- Database Summary -->
@@ -74,7 +79,7 @@
         <div class="card bg-light stats-card">
             <div class="card-body">
                 <div class="row text-center">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="d-flex align-items-center justify-content-center">
                             <i class="fas fa-folder text-primary me-3" style="font-size: 2rem;"></i>
                             <div>
@@ -83,12 +88,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="d-flex align-items-center justify-content-center">
                             <i class="fas fa-book text-success me-3" style="font-size: 2rem;"></i>
                             <div>
                                 <h4 class="mb-0 text-success">{{ $totalProducts }}</h4>
                                 <small class="text-muted">Total Products</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="fas fa-truck text-warning me-3" style="font-size: 2rem;"></i>
+                            <div>
+                                <h4 class="mb-0 text-warning">{{ $totalDistributors }}</h4>
+                                <small class="text-muted">Total Distributors</small>
                             </div>
                         </div>
                     </div>
@@ -126,10 +140,10 @@
 
 <div class="row">
     <!-- Category Bulk Upload -->
-    <div class="col-lg-6">
-        <div class="card shadow-sm">
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm h-100">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-folder-plus me-2"></i>Bulk Category Upload</h5>
+                <h6 class="mb-0"><i class="fas fa-folder-plus me-2"></i>Bulk Category Upload</h6>
             </div>
             <div class="card-body">
                 <div class="upload-section text-center">
@@ -182,10 +196,10 @@
     </div>
 
     <!-- Product Bulk Upload -->
-    <div class="col-lg-6">
-        <div class="card shadow-sm">
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm h-100">
             <div class="card-header bg-success text-white">
-                <h5 class="mb-0"><i class="fas fa-book-plus me-2"></i>Bulk Product Upload</h5>
+                <h6 class="mb-0"><i class="fas fa-book-plus me-2"></i>Bulk Product Upload</h6>
             </div>
             <div class="card-body">
                 <div class="upload-section text-center">
@@ -263,6 +277,118 @@
             </div>
         </div>
     </div>
+
+    <!-- Distributor Bulk Upload -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-warning text-white">
+                <h6 class="mb-0"><i class="fas fa-truck-plus me-2"></i>Bulk Distributor Upload</h6>
+            </div>
+            <div class="card-body">
+                <div class="upload-section text-center">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <h6>Upload Distributors</h6>
+                    <p class="text-muted mb-3">Upload multiple distributors at once using CSV/Excel file</p>
+                    
+                    <form action="{{ route('admin.bulk.distributors.upload') }}" method="POST" enctype="multipart/form-data" id="distributorForm">
+                        @csrf
+                        <div class="mb-3">
+                            <input type="file" class="form-control" id="distributor_file" name="distributor_file" accept=".xlsx,.xls,.csv" required>
+                            <div class="file-info" id="distributorFileInfo">
+                                <small class="text-muted"><strong>File selected:</strong> <span class="filename"></span></small>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-container" id="distributorProgress">
+                            <div class="progress">
+                                <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning text-white">
+                                <i class="fas fa-upload me-2"></i>Upload Distributors
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="mt-3">
+                    <h6><i class="fas fa-info-circle me-2"></i>Template & Instructions</h6>
+                    <p class="small text-muted mb-2">
+                        Download the template and fill in your distributor data. <strong>All fields required:</strong> Company, Contact Person, Contact Information, Email ID, City, State Distribution
+                    </p>
+                    <a href="{{ route('admin.bulk.template.download', 'distributors') }}" class="template-link">
+                        <i class="fas fa-download me-1"></i>Download Distributor Template
+                    </a>
+                    
+                    <div class="export-section">
+                        <h6><i class="fas fa-file-export me-2"></i>Export Existing</h6>
+                        <p class="small text-muted mb-2">Download all existing distributors</p>
+                        <a href="{{ route('admin.bulk.export.distributors') }}" class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-file-export me-1"></i>Export All Distributors
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity Section with Pagination Demo -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Upload Activity</h5>
+                <small class="text-muted">Last 10 operations</small>
+            </div>
+            <div class="card-body">
+                @if($recentUploads->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Records</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($recentUploads as $upload)
+                                    <tr>
+                                        <td>{{ $upload->type }}</td>
+                                        <td>{{ $upload->records }}</td>
+                                        <td>{{ $upload->status }}</td>
+                                        <td>{{ $upload->created_at }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted small">
+                            Showing {{ $recentUploads->firstItem() ?? 0 }} to {{ $recentUploads->lastItem() ?? 0 }} of {{ $recentUploads->total() ?? 0 }} entries
+                        </div>
+                        @if(method_exists($recentUploads, 'links'))
+                            {{ $recentUploads->links() }}
+                        @endif
+                    </div>
+                @else
+                    <div class="text-center py-4">
+                        <div class="text-muted">
+                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                            <p>No recent upload activity</p>
+                            <small>Upload activity will appear here once you start using bulk operations</small>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row mt-4">
@@ -282,6 +408,7 @@
                             <li>Download templates for proper format</li>
                             <li>Categories: Name (required), Age Category, Description, Image URL, Is Active</li>
                             <li>Products: Name (required), all product details optional</li>
+                            <li>Distributors: All fields required (Company, Contact Person, Contact Info, Email, City, State Distribution)</li>
                             <li>Use "Yes/No" or "1/0" for Active status</li>
                         </ul>
                     </div>
@@ -301,9 +428,11 @@
                         <ul class="small">
                             <li><strong>Categories:</strong> Name*, Age Category, Description, Image URL, Active Status</li>
                             <li><strong>Products:</strong> Name*, Description, Additional Info, Price, Age, Series, Pages, Publisher, Author, Language, Copyright, Graphics, Stock, SKU, ISBN, Publication Year, Image URL, Active Status</li>
+                            <li><strong>Distributors:</strong> Company*, Contact Person*, Contact Information*, Email ID*, City*, State Distribution*</li>
                             <li>* Required fields</li>
                             <li>Image URLs: Use full URLs or leave empty</li>
                             <li>Active Status: Use "Yes/No" or "1/0"</li>
+                            <li>All distributor fields are mandatory</li>
                         </ul>
                     </div>
                 </div>
@@ -325,6 +454,10 @@ document.addEventListener('DOMContentLoaded', function() {
         handleFileSelect(e, 'productFileInfo');
     });
     
+    document.getElementById('distributor_file').addEventListener('change', function(e) {
+        handleFileSelect(e, 'distributorFileInfo');
+    });
+    
     // Handle form submissions with progress
     document.getElementById('categoryForm').addEventListener('submit', function(e) {
         handleFormSubmit(e, 'categoryProgress');
@@ -332,6 +465,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.getElementById('productForm').addEventListener('submit', function(e) {
         handleFormSubmit(e, 'productProgress');
+    });
+    
+    document.getElementById('distributorForm').addEventListener('submit', function(e) {
+        handleFormSubmit(e, 'distributorProgress');
     });
     
     function handleFileSelect(event, infoElementId) {
@@ -370,6 +507,11 @@ document.addEventListener('DOMContentLoaded', function() {
         window.addEventListener('beforeunload', function() {
             clearInterval(interval);
         });
+    }
+    
+    // Refresh stats function
+    function refreshStats() {
+        location.reload();
     }
 });
 </script>

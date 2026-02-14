@@ -62,10 +62,7 @@
             <!-- Main Content -->
             <div class="col-md-9 col-lg-10 main-content p-4">
                 <!-- Header -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3 mb-0">@yield('page-title', 'Dashboard')</h1>
-                </div>
-
+               
                 <!-- Alerts -->
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">

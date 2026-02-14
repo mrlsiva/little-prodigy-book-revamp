@@ -4,13 +4,6 @@
 @section('page-title', 'Banner Management')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Home Page Banners</h2>
-    <a href="{{ route('admin.banners.create') }}" class="btn btn-primary">
-        <i class="fas fa-plus me-2"></i>Add New Banner
-    </a>
-</div>
-
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0"><i class="fas fa-images me-2"></i>All Banners</h5>

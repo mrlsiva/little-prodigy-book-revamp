@@ -19,9 +19,29 @@ class DistributorController extends Controller
     /**
      * Show the admin distributors list.
      */
-    public function adminIndex()
+    public function adminIndex(Request $request)
     {
-        $distributors = Distributor::all();
+        $query = Distributor::query();
+        
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('company', 'like', "%{$search}%")
+                  ->orWhere('contact_person', 'like', "%{$search}%")
+                  ->orWhere('email_id', 'like', "%{$search}%")
+                  ->orWhere('city', 'like', "%{$search}%")
+                  ->orWhere('state_wise_distribution', 'like', "%{$search}%")
+                  ->orWhere('contact_information', 'like', "%{$search}%");
+            });
+        }
+        
+        $perPage = $request->get('per_page', 15);
+        $distributors = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        
+        // Append query parameters to pagination links
+        $distributors->appends($request->query());
+        
         return view('admin.distributors.index', compact('distributors'));
     }
 
