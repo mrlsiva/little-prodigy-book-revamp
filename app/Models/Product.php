@@ -36,6 +36,10 @@ class Product extends Model
         'pages' => 'integer',
     ];
 
+    protected $appends = [
+        'image_url'
+    ];
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

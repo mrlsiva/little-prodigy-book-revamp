@@ -1,506 +1,529 @@
 @extends('layouts.app')
 
-@section('title', 'Little Prodigy Books - Nurturing Young Minds')
+@section('title', 'Little Prodigy Books')
+
+@php
+    use Illuminate\Support\Facades\Storage;
+    use Illuminate\Support\Str;
+@endphp
 
 @section('content')
-<!-- Hero Carousel -->
+<!-- Hero Section / Banner Slider -->
 @if($banners->count() > 0)
-<div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+<section class="hero-section position-relative">
     @if($banners->count() > 1)
+    <!-- Multiple banners - show as carousel -->
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+        <!-- Indicators -->
         <div class="carousel-indicators">
             @foreach($banners as $index => $banner)
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $index }}" 
-                        @if($index === 0) class="active" aria-current="true" @endif 
-                        aria-label="Slide {{ $index + 1 }}"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $index }}" 
+                    class="{{ $index === 0 ? 'active' : '' }}" aria-current="true" aria-label="Slide {{ $index + 1 }}"></button>
             @endforeach
         </div>
-    @endif
-    
-    <div class="carousel-inner">
-        @foreach($banners as $index => $banner)
-            <div class="carousel-item @if($index === 0) active @endif">
-                <img src="{{ $banner->image_url }}" class="d-block w-100" alt="{{ $banner->title }}" style="height: 500px; object-fit: cover;">
-                <div class="banner-background-overlay"></div>
-                <div class="carousel-caption d-flex flex-column justify-content-center align-items-center h-100 d-none d-md-flex banner-overlay">
-                    <div class="text-center mx-auto" style="max-width: 800px;">
-                        <p class="fw-bold text-white mb-3" style="font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">{{ $banner->title }}</p>
+
+        <!-- Carousel Inner -->
+        <div class="carousel-inner">
+            @foreach($banners as $index => $banner)
+            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                <img src="{{ $banner->image_url }}" class="hero-image w-100" alt="{{ $banner->title }}">
+                <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                    <div class="hero-content text-center text-white">
+                        <p class="hero-subtitle h4 mb-4">{{ $banner->title }}</p>
                         @if($banner->subtitle)
-                            <p class="text-white mb-4" style="font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); font-weight: 400;">{{ $banner->subtitle }}</p>
+                        <p class="hero-subtitle h4 mb-4">{{ $banner->subtitle }}</p>
                         @endif
                         @if($banner->button_text && $banner->button_url)
-                            <a href="{{ $banner->button_url }}" class="btn btn-primary btn-lg px-4 py-2">{{ $banner->button_text }}</a>
+                        <a href="{{ $banner->button_url }}" class="btn btn-primary btn-lg px-5 py-3">{{ $banner->button_text }}</a>
                         @endif
                     </div>
                 </div>
-                <!-- Mobile version -->
-                <div class="carousel-caption d-block d-md-none" style="background: rgba(0,0,0,0.6); padding: 20px; border-radius: 10px;">
-                    <p class="fw-bold text-white mb-2" style="font-size: 1.5rem;">{{ $banner->title }}</p>
-                    @if($banner->subtitle)
-                        <p class="text-white mb-3" style="font-size: 1.5rem; font-weight: 400;">{{ $banner->subtitle }}</p>
-                    @endif
-                    @if($banner->button_text && $banner->button_url)
-                        <a href="{{ $banner->button_url }}" class="btn btn-primary">{{ $banner->button_text }}</a>
-                    @endif
-                </div>
             </div>
-        @endforeach
-    </div>
-    
-    @if($banners->count() > 1)
+            @endforeach
+        </div>
+
+        <!-- Controls -->
         <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
-    @endif
-</div>
-@else
-<!-- Default fallback when no banners exist -->
-<div class="bg-primary position-relative d-flex align-items-center justify-content-center" style="height: 500px;">
-    <div class="container text-center text-white">
-        <div style="max-width: 800px; margin: 0 auto; padding: 40px;">
-            <p class="fw-bold mb-3" style="font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Welcome to Little Prodigy Books</p>
-            <p class="mb-4" style="font-size: 2rem; font-weight: 400; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Discover amazing books that spark imagination and learning</p>
-            <a href="#categories" class="btn btn-light btn-lg px-4 py-2">Explore Books</a>
+    </div>
+    @else
+    <!-- Single banner -->
+    @php $banner = $banners->first(); @endphp
+    <img src="{{ $banner->image_url }}" class="hero-image w-100" alt="{{ $banner->title }}">
+    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+        <div class="hero-content text-center text-white">
+            <p class="hero-subtitle h4 mb-4">{{ $banner->title }}</p>
+            @if($banner->subtitle)
+            <p class="hero-subtitle h4 mb-4">{{ $banner->subtitle }}</p>
+            @endif
+            @if($banner->button_text && $banner->button_url)
+            <a href="{{ $banner->button_url }}" class="btn btn-primary btn-lg px-5 py-3">{{ $banner->button_text }}</a>
+            @endif
         </div>
     </div>
-</div>
-@endif
+    @endif
 
-<!-- Categories Section -->
-<section id="categories" class="py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold text-primary">Book Categories</h2>
-            <p class="lead text-muted">Explore our diverse collection of educational books</p>
-        </div>
-
-        <div id="categoriesContainer">
-            @foreach($categories as $category)
-                @if($category->products->count() > 0)
-                    <div class="category-section mb-5" data-category-id="{{ $category->id }}">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h3 class="text-primary">
-                                {{ $category->name }}
-                                @if($category->age_category)
-                                    <small class="text-muted">({{ $category->age_category }})</small>
-                                @endif
-                            </h3>
-                            <a href="{{ route('category.products', $category->id) }}" class="btn btn-outline-primary">
-                                View All <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-
-                        <div id="productCarousel{{ $category->id }}" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                @php
-                                    $chunks = $category->products->chunk(4);
-                                @endphp
-                                @foreach($chunks as $chunkIndex => $chunk)
-                                    <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
-                                        <div class="row">
-                                            @foreach($chunk as $product)
-                                                <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                                                    <!-- Skeleton Loader -->
-                                                    <div class="card skeleton-card h-100 shadow-sm skeleton-loader" style="display: none;">
-                                                        <div class="skeleton-image"></div>
-                                                        <div class="card-body p-3">
-                                                            <div class="skeleton-text skeleton-text-lg"></div>
-                                                            <div class="skeleton-text skeleton-text-sm" style="width: 70%;"></div>
-                                                            <div class="skeleton-text skeleton-text-sm" style="width: 40%;"></div>
-                                                            <div class="skeleton-button mt-2"></div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <!-- Actual Card -->
-                                                    <div class="card product-card h-100 shadow-sm product-card-content">
-                                                        <img src="{{ $product->image_url }}" class="card-img-top product-image" alt="{{ $product->name }}" style="height: 220px; object-fit: cover;" data-product-id="{{ $product->id }}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIiBzdHJva2U9IiNlMmU4ZjAiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNDAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5SCPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNjUlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Cb29rIEltYWdlPC90ZXh0Pjwvc3ZnPg=='; this.onerror=null;">
-                                                        <div class="card-body p-3">
-                                                            <h6 class="card-title">{{ Str::limit($product->name, 35) }}</h6>
-                                                            @if($product->author)
-                                                                <small class="text-muted d-block mb-2">by {{ $product->author }}</small>
-                                                            @endif
-                                                            @if($product->price)
-                                                                <div class="text-primary fw-bold mb-2">Rs {{ $product->price }}</div>
-                                                            @endif
-                                                            <a href="{{ route('product.detail', $product->id) }}" class="btn btn-sm btn-outline-primary w-100">View Details</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                            
-                            @if($chunks->count() > 1)
-                                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel{{ $category->id }}" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Previous</span>
-                                </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel{{ $category->id }}" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Next</span>
-                                </button>
-                            @endif
-                        </div>
-                    </div>
-                @endif
-            @endforeach
-        </div>
-
-        <!-- Load More Button -->
-        <div class="text-center mt-5">
-            <button id="loadMoreBtn" class="btn btn-primary btn-lg" data-skip="{{ count($categories) }}">
-                <span class="loading-spinner spinner-border spinner-border-sm me-2" role="status"></span>
-                Load More Categories
-            </button>
-        </div>
+</section>
+@else
+<!-- Fallback hero section when no banners exist -->
+<section class="hero-section position-relative">
+    <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=600&fit=crop&crop=center" class="hero-image w-100" alt="Children reading books">
+    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+        <!-- <div class="hero-content text-center text-white">
+            <p class="hero-subtitle h4 mb-0">A Place Set Aside For Books And Their Friends</p>
+            <p class="hero-subtitle h4 mb-0">Enchanting Selections Of Wonderful Books</p>
+        </div> -->
+    </div>
+    <!-- Floating Action Buttons -->
+    <div class="floating-buttons position-absolute">
+        <a href="{{ asset('catalouge/Our-Library-Catalogue.pdf') }}" target="_blank" class="floating-btn catalogue-btn d-flex align-items-center">
+            <i class="fas fa-book me-2"></i>
+            <span>Catalogue</span>
+        </a>
+        <a href="https://wa.me/919876543210" target="_blank" class="floating-btn whatsapp-btn">
+            <i class="fab fa-whatsapp"></i>
+        </a>
     </div>
 </section>
+@endif
 
-@if($categories->isEmpty())
-    <section class="py-5">
-        <div class="container text-center">
-            <div class="py-5">
-                <i class="fas fa-book fa-4x text-muted mb-4"></i>
-                <h3 class="text-muted">No Categories Available</h3>
-                <p class="text-muted">Check back soon for amazing book collections!</p>
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Go to Admin Panel</a>
+<!-- Book Series Sections -->
+<section id="book-series" class="py-5 bg-light">
+    <div class="container-fluid px-lg-5">
+        
+        @if($categories->count() > 0)
+            @foreach($categories as $index => $category)
+            <!-- {{ $category->name }} Series -->
+            <div class="series-section mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4 px-3">
+                    <h3 class="series-title">
+                        {{ $category->name }}
+                    </h3>
+                    <a href="{{ route('category.products', $category->id) }}" class="view-more-link text-dark fw-bold text-decoration-none">
+                        View More <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+
+                @if($category->products->count() > 0)
+                <div class="position-relative">
+                    @if($category->products->count() > 5)
+                    <!-- Slick Slider for categories with more than 5 products -->
+                    <div class="product-slider slick-slider" id="slider{{ $index }}">
+                        @foreach($category->products as $product)
+                        <div class="book-card-wrapper">
+                            <div class="book-card text-center mx-1">
+                                <div class="book-cover-container position-relative">
+                                    @if($product->image)
+                                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="book-cover img-fluid rounded">
+                                    @else
+                                        <div class="book-cover fallback-image d-flex align-items-center justify-content-center">
+                                            {{ $product->name }}
+                                        </div>
+                                    @endif
+                                </div>
+                                <h6 class="book-title mt-3 mb-3 fw-bold">{{ Str::limit($product->name, 30) }}</h6>
+                                <a href="{{ route('product.detail', $product->id) }}" class="btn btn-danger btn-sm px-4 view-details-btn">View Details</a>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @else
+                    <!-- Simple row for categories with 5 or fewer products -->
+                    <div class="row px-3">
+                        @foreach($category->products as $product)
+                        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
+                            <div class="book-card text-center">
+                                <div class="book-cover-container position-relative">
+                                    @if($product->image)
+                                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="book-cover img-fluid rounded">
+                                    @else
+                                        <div class="book-cover fallback-image d-flex align-items-center justify-content-center">
+                                            {{ $product->name }}
+                                        </div>
+                                    @endif
+                                </div>
+                                <h6 class="book-title mt-3 mb-3 fw-bold">{{ Str::limit($product->name, 30) }}</h6>
+                                <a href="{{ route('product.detail', $product->id) }}" class="btn btn-danger btn-sm px-4 view-details-btn">View Details</a>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
+                </div>
+                @else
+                <div class="text-center py-5">
+                    <p class="text-muted">No products available in this category yet.</p>
+                </div>
+                @endif
+            </div>
+            @endforeach
+        @else
+        <!-- No categories message -->
+        <div class="text-center py-5">
+            <div class="series-section">
+                <h3 class="text-muted">No book categories available yet.</h3>
+                <p class="text-muted">Please check back later for our amazing collection of books!</p>
             </div>
         </div>
-    </section>
-@endif
+        @endif
+        
+        <!-- Load More Button - Only show if there are more categories to load -->
+        @php
+            $totalCategories = \App\Models\Category::where('is_active', true)
+                ->whereHas('products', function($query) {
+                    $query->where('is_active', true);
+                })->count();
+        @endphp
+        
+        @if($totalCategories > $categories->count())
+        <div class="text-center mt-5" id="loadMoreContainer">
+            <button type="button" class="btn btn-outline-primary btn-lg" id="loadMoreBtn">
+                <i class="fas fa-plus-circle me-2"></i>
+                <span id="loadMoreText">Load More Categories</span>
+                <span id="loadMoreSpinner" class="spinner-border spinner-border-sm ms-2" role="status" style="display: none;">
+                    <span class="visually-hidden">Loading...</span>
+                </span>
+            </button>
+        </div>
+        @endif
+    </div>
+</section>
+@endsection
+
+@section('styles')
+<style>
+/* Custom Slick Slider Theme Override */
+.slick-slider .slick-track {
+    display: flex;
+    align-items: stretch;
+}
+
+.slick-slider .slick-slide {
+    height: auto;
+}
+
+.slick-slider .slick-slide > div {
+    height: 100%;
+}
+
+/* Override default slick theme colors */
+.slick-dots li button:before {
+    color: var(--primary-color);
+}
+
+.slick-dots li.slick-active button:before {
+    color: var(--primary-color);
+}
+
+/* Ensure proper spacing */
+.product-slider {
+    padding: 10px 0;
+}
+
+/* Slick Slider Arrow Styling */
+.slick-prev, .slick-next {
+    width: 40px;
+    height: 40px;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.slick-prev:hover, .slick-next:hover {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+}
+
+.slick-prev {
+    left: -20px;
+}
+
+.slick-next {
+    right: -20px;
+}
+
+.slick-prev:before, .slick-next:before {
+    display: none;
+}
+
+/* Book card hover effects for slick slider */
+.slick-slide .book-card {
+    transition: transform 0.3s ease;
+}
+
+.slick-slide .book-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Load More Button Styling */
+#loadMoreBtn {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #c02d42 100%);
+    border: none;
+    border-radius: 50px;
+    padding: 15px 30px;
+    font-weight: 600;
+    font-size: 16px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(228, 55, 80, 0.3);
+    transition: all 0.3s ease;
+}
+
+#loadMoreBtn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #c02d42 0%, var(--primary-color) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(228, 55, 80, 0.4);
+    color: white;
+}
+
+#loadMoreBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#loadMoreContainer {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+</style>
 @endsection
 
 @section('scripts')
 <script>
 $(document).ready(function() {
-    let loading = false;
-
-    // Initialize skeleton loaders
-    initializeSkeletonLoaders();
-
-    function initializeSkeletonLoaders() {
-        // Show skeleton loaders initially
-        $('.skeleton-loader').show();
-        $('.product-card-content, .stats-content').hide();
-        
-        // Handle image loading
-        $('.product-image').each(function() {
-            const img = this;
-            const $cardContainer = $(img).closest('.col-lg-3, .col-md-6, .col-sm-6');
-            const $skeletonLoader = $cardContainer.find('.skeleton-loader');
-            const $productContent = $cardContainer.find('.product-card-content');
-            
-            if (img.complete) {
-                // Image already loaded
-                $skeletonLoader.fadeOut(300, function() {
-                    $productContent.fadeIn(300);
-                });
-            } else {
-                // Listen for image load
-                $(img).on('load', function() {
-                    setTimeout(() => {
-                        $skeletonLoader.fadeOut(300, function() {
-                            $productContent.fadeIn(300);
-                        });
-                    }, 500); // Minimum skeleton display time
-                });
-                
-                // Handle image error
-                $(img).on('error', function() {
-                    setTimeout(() => {
-                        $skeletonLoader.fadeOut(300, function() {
-                            $productContent.fadeIn(300);
-                        });
-                    }, 500);
-                });
-            }
-        });
-        
-        // Show stats content after a brief delay to simulate loading
-        setTimeout(() => {
-            $('.stats-skeleton').fadeOut(300, function() {
-                $('.stats-content').fadeIn(300);
-            });
-        }, 800);
-    }
-
-    $('#loadMoreBtn').click(function() {
-        if (loading) return;
-
-        loading = true;
-        const btn = $(this);
-        const skip = btn.data('skip');
-
-        // Show loading spinner
-        btn.find('.loading-spinner').show();
-        btn.prop('disabled', true);
-
-        $.ajax({
-            url: '{{ route("load.more.categories") }}',
-            method: 'GET',
-            data: { skip: skip },
-            success: function(response) {
-                if (response.categories.length > 0) {
-                    response.categories.forEach(function(category) {
-                        const categoryHtml = createCategoryHtml(category);
-                        $('#categoriesContainer').append(categoryHtml);
-                        
-                        // Initialize skeleton loaders for new content
-                        initializeSkeletonLoadersForNew(category.id);
-                    });
-
-                    // Update skip count
-                    btn.data('skip', skip + response.categories.length);
-
-                    // Hide button if no more categories
-                    if (!response.hasMore) {
-                        btn.hide();
-                    }
-                } else {
-                    btn.hide();
+    // Initialize Slick Slider for product categories
+    $('.slick-slider').slick({
+        dots: false,
+        infinite: true,
+        speed: 300,
+        slidesToShow: 5,
+        slidesToScroll: 2,
+        prevArrow: '<button type="button" class="slick-prev slick-arrow"><i class="fas fa-chevron-left"></i></button>',
+        nextArrow: '<button type="button" class="slick-next slick-arrow"><i class="fas fa-chevron-right"></i></button>',
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 2
                 }
             },
-            error: function() {
-                alert('Error loading more categories. Please try again.');
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 2
+                }
             },
-            complete: function() {
-                btn.find('.loading-spinner').hide();
-                btn.prop('disabled', false);
-                loading = false;
+            {
+                breakpoint: 576,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1
+                }
             }
-        });
+        ]
     });
 
-    function initializeSkeletonLoadersForNew(categoryId) {
-        $(`[data-category-id="${categoryId}"] .product-image`).each(function() {
-            const img = this;
-            const $cardContainer = $(img).closest('.col-lg-3, .col-md-6, .col-sm-6');
-            const $skeletonLoader = $cardContainer.find('.skeleton-loader');
-            const $productContent = $cardContainer.find('.product-card-content');
-            
-            // Set default placeholder for error cases
-            const defaultPlaceholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhfOWZhIiBzdHJva2U9IiNlMmU4ZjAiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNDAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj48aSBjbGFzcz0iZmFzIGZhLWJvb2siPjwvaT48L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI2NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzljYTFiMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkJvb2sgSW1hZ2U8L3RleHQ+PC9zdmc+';
-            
-            $skeletonLoader.show();
-            $productContent.hide();
-            
-            $(img).on('load', function() {
-                setTimeout(() => {
-                    $skeletonLoader.fadeOut(300, function() {
-                        $productContent.fadeIn(300);
-                    });
-                }, 300);
-            });
-            
-            $(img).on('error', function() {
-                // Set placeholder image for error state
-                img.src = defaultPlaceholder;
-                
-                // Keep skeleton visible longer for error state
-                setTimeout(() => {
-                    $skeletonLoader.fadeOut(300, function() {
-                        $productContent.fadeIn(300);
-                    });
-                }, 600);
-            });
-        });
-    }
-
-    function createCategoryHtml(category) {
-        let productsHtml = '';
-        
-        if (category.products && category.products.length > 0) {
-            // Create product chunks for carousel
-            const productChunks = [];
-            for (let i = 0; i < category.products.length; i += 4) {
-                productChunks.push(category.products.slice(i, i + 4));
-            }
-
-            productChunks.forEach(function(chunk, chunkIndex) {
-                const activeClass = chunkIndex === 0 ? 'active' : '';
-                let chunkHtml = `<div class="carousel-item ${activeClass}"><div class="row">`;
-                
-                chunk.forEach(function(product) {
-                    const productName = product.name.length > 35 ? product.name.substring(0, 35) + '...' : product.name;
-                    const authorInfo = product.author ? `<small class="text-muted d-block mb-2">by ${product.author}</small>` : '';
-                    const priceInfo = product.price ? `<div class="text-primary fw-bold mb-2">Rs ${product.price}</div>` : '';
-                    
-                    chunkHtml += `
-                        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-                            <!-- Skeleton Loader -->
-                            <div class="card skeleton-card h-100 shadow-sm skeleton-loader">
-                                <div class="skeleton-image"></div>
-                                <div class="card-body p-3">
-                                    <div class="skeleton-text skeleton-text-lg"></div>
-                                    <div class="skeleton-text skeleton-text-sm" style="width: 70%;"></div>
-                                    <div class="skeleton-text skeleton-text-sm" style="width: 40%;"></div>
-                                    <div class="skeleton-button mt-2"></div>
-                                </div>
-                            </div>
-                            
-                            <!-- Actual Card -->
-                            <div class="card product-card h-100 shadow-sm product-card-content" style="display: none;">
-                                <img src="${product.image_url || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIiBzdHJva2U9IiNlMmU4ZjAiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNDAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5OCPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNjUlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Cb29rIEltYWdlPC90ZXh0Pjwvc3ZnPg=='}" class="card-img-top product-image" alt="${product.name}" style="height: 220px; object-fit: cover;" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIiBzdHJva2U9IiNlMmU4ZjAiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNDAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5OCPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNjUlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiM5Y2ExYjIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Cb29rIEltYWdlPC90ZXh0Pjwvc3ZnPg=='; this.onerror=null;">
-                                <div class="card-body p-3">
-                                    <h6 class="card-title">${productName}</h6>
-                                    ${authorInfo}
-                                    ${priceInfo}
-                                    <a href="/product/${product.id}" class="btn btn-sm btn-outline-primary w-100">View Details</a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                chunkHtml += '</div></div>';
-                productsHtml += chunkHtml;
-            });
-
-            // Create carousel controls if more than one slide
-            let carouselControls = '';
-            if (productChunks.length > 1) {
-                carouselControls = `
-                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel${category.id}" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel${category.id}" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                `;
-            }
-
-            productsHtml = `
-                <div id="productCarousel${category.id}" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        ${productsHtml}
-                    </div>
-                    ${carouselControls}
-                </div>
-            `;
-        } else {
-            productsHtml = `
-                <div class="text-center text-muted py-5">
-                    <i class="fas fa-book fa-3x mb-3"></i>
-                    <p>No books available in this category yet.</p>
-                </div>
-            `;
-        }
-
-        const ageCategory = category.age_category ? `<small class="text-muted">(${category.age_category})</small>` : '';
-
-        return `
-            <div class="category-section mb-5" data-category-id="${category.id}">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-primary">
-                        ${category.name}
-                        ${ageCategory}
-                    </h3>
-                    <a href="/category/${category.id}" class="btn btn-outline-primary">
-                        View All <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-                ${productsHtml}
-            </div>
-        `;
-    }
-});
-
-// Initialize carousel
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Bootstrap carousel
-    const carouselElement = document.querySelector('#heroCarousel');
-    if (carouselElement) {
-        const carousel = new bootstrap.Carousel(carouselElement, {
+    // Initialize Bootstrap carousel for hero section (if exists)
+    const heroCarousel = document.querySelector('#heroCarousel');
+    if (heroCarousel) {
+        const carousel = new bootstrap.Carousel(heroCarousel, {
             interval: 5000,
             ride: 'carousel'
         });
         
-        // Optional: Pause carousel on hover
-        carouselElement.addEventListener('mouseenter', function() {
+        // Pause carousel on hover
+        heroCarousel.addEventListener('mouseenter', function() {
             carousel.pause();
         });
         
-        carouselElement.addEventListener('mouseleave', function() {
+        heroCarousel.addEventListener('mouseleave', function() {
             carousel.cycle();
         });
     }
+
+    // Load More Categories functionality
+    let loadedCategories = {{ $categories->count() }}; // Track how many categories are currently loaded
+    
+    $('#loadMoreBtn').click(function() {
+        const $btn = $(this);
+        const $spinner = $('#loadMoreSpinner');
+        const $text = $('#loadMoreText');
+        
+        // Show loading state
+        $btn.prop('disabled', true);
+        $spinner.show();
+        $text.text('Loading...');
+        
+        $.ajax({
+            url: '{{ route("load.more.categories") }}',
+            method: 'GET',
+            data: {
+                skip: loadedCategories
+            },
+            success: function(response) {
+                if (response.categories && response.categories.length > 0) {
+                    // Append new categories to the existing content
+                    let html = '';
+                    
+                    response.categories.forEach(function(category, index) {
+                        if (category.products && category.products.length > 0) {
+                            html += generateCategoryHTML(category, loadedCategories + index);
+                        }
+                    });
+                    
+                    if (html) {
+                        $('#loadMoreContainer').before(html);
+                        
+                        // Initialize slick slider for new categories with more than 5 products
+                        response.categories.forEach(function(category, index) {
+                            if (category.products && category.products.length > 5) {
+                                const sliderId = '#slider' + (loadedCategories + index);
+                                if ($(sliderId).length && !$(sliderId).hasClass('slick-initialized')) {
+                                    $(sliderId).slick({
+                                        dots: false,
+                                        infinite: true,
+                                        speed: 300,
+                                        slidesToShow: 5,
+                                        slidesToScroll: 2,
+                                        prevArrow: '<button type="button" class="slick-prev slick-arrow"><i class="fas fa-chevron-left"></i></button>',
+                                        nextArrow: '<button type="button" class="slick-next slick-arrow"><i class="fas fa-chevron-right"></i></button>',
+                                        responsive: [
+                                            {
+                                                breakpoint: 1024,
+                                                settings: {
+                                                    slidesToShow: 4,
+                                                    slidesToScroll: 2
+                                                }
+                                            },
+                                            {
+                                                breakpoint: 768,
+                                                settings: {
+                                                    slidesToShow: 3,
+                                                    slidesToScroll: 2
+                                                }
+                                            },
+                                            {
+                                                breakpoint: 576,
+                                                settings: {
+                                                    slidesToShow: 2,
+                                                    slidesToScroll: 1
+                                                }
+                                            }
+                                        ]
+                                    });
+                                }
+                            }
+                        });
+                        
+                        loadedCategories += response.categories.length;
+                    }
+                    
+                    // Hide load more button if no more categories
+                    if (!response.hasMore) {
+                        $('#loadMoreContainer').fadeOut();
+                    }
+                } else {
+                    $('#loadMoreContainer').fadeOut();
+                }
+            },
+            error: function() {
+                alert('Failed to load more categories. Please try again.');
+            },
+            complete: function() {
+                // Reset button state
+                $btn.prop('disabled', false);
+                $spinner.hide();
+                $text.text('Load More Categories');
+            }
+        });
+    });
+    
+    // Function to generate HTML for a category section
+    function generateCategoryHTML(category, index) {
+        let html = '<div class="series-section mb-5">';
+        html += '<div class="d-flex justify-content-between align-items-center mb-4 px-3">';
+        html += '<h3 class="series-title">' + category.name + '</h3>';
+        html += '<a href="/category/' + category.id + '/products" class="view-more-link text-dark fw-bold text-decoration-none">';
+        html += 'View More <i class="fas fa-chevron-right"></i></a></div>';
+        
+        if (category.products && category.products.length > 0) {
+            html += '<div class="position-relative">';
+            
+            if (category.products.length > 5) {
+                // Slick slider for categories with more than 5 products
+                html += '<div class="product-slider slick-slider" id="slider' + index + '">';
+                category.products.forEach(function(product) {
+                    html += generateProductHTML(product);
+                });
+                html += '</div>';
+            } else {
+                // Regular grid for categories with 5 or fewer products
+                html += '<div class="row">';
+                category.products.forEach(function(product) {
+                    html += '<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-6">';
+                    html += generateProductHTML(product, false);
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+            html += '</div>';
+        } else {
+            html += '<div class="text-center py-5"><p class="text-muted">No products available in this category yet.</p></div>';
+        }
+        
+        html += '</div>';
+        return html;
+    }
+    
+    // Function to generate HTML for a product
+    function generateProductHTML(product, isSlider = true) {
+        let html = '';
+        
+        if (isSlider) {
+            html += '<div class="book-card-wrapper">';
+        }
+        
+        html += '<div class="book-card text-center' + (isSlider ? ' mx-1' : '') + '">';
+        html += '<div class="book-cover-container position-relative">';
+        
+        if (product.image) {
+            // Use the image_url field from API response which includes proper domain and path
+            html += '<img src="' + product.image_url + '" alt="' + product.name + '" class="book-cover img-fluid rounded">';
+        } else {
+            html += '<div class="book-cover fallback-image d-flex align-items-center justify-content-center">' + product.name + '</div>';
+        }
+        
+        html += '</div>';
+        html += '<h6 class="book-title mt-3 mb-3 fw-bold">' + (product.name.length > 30 ? product.name.substring(0, 30) + '...' : product.name) + '</h6>';
+        html += '<a href="/product/' + product.id + '" class="btn btn-danger btn-sm px-4 view-details-btn">View Details</a>';
+        html += '</div>';
+        
+        if (isSlider) {
+            html += '</div>';
+        }
+        
+        return html;
+    }
 });
 </script>
-@endsection
-
-@section('styles')
-<style>
-/* Banner Styling */
-.carousel-item {
-    position: relative;
-    /* min-height: 500px; */
-}
-
-/* Background overlay for better text readability */
-.banner-background-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 1;
-}
-
-/* Ensure carousel caption is above overlay but below controls */
-.carousel-caption.banner-overlay {
-    z-index: 2;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 15px;
-    right: 15px;
-    padding: 40px 20px;
-}
-
-/* Ensure carousel controls are above everything */
-.carousel-control-prev,
-.carousel-control-next {
-    z-index: 15;
-}
-
-.carousel-indicators {
-    z-index: 15;
-}
-
-/* Equal font size for title and subtitle */
-.carousel-caption p {
-    margin-bottom: 1rem;
-    line-height: 1.3;
-    font-size: 2rem !important;
-}
-
-/* Mobile responsive */
-@media (max-width: 767px) {
-    .carousel-caption p {
-        font-size: 1.5rem !important;
-    }
-}
-
-/* Button styling */
-.carousel-caption .btn {
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    border: 2px solid transparent;
-    z-index: 3;
-    position: relative;
-}
-
-.carousel-caption .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-}
-</style>
 @endsection

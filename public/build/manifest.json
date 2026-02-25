@@ -1,12 +1,20 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-DXR3BtYn.css",
+    "file": "assets/app-BB0DKrWG.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
     "names": [
       "app.css"
     ]
+  },
+  "resources/images/sketch-header-blue.png": {
+    "file": "assets/sketch-header-blue-D1EJ0NgC.png",
+    "src": "resources/images/sketch-header-blue.png"
+  },
+  "resources/images/sketch-header.png": {
+    "file": "assets/sketch-header-C-HS2K4G.png",
+    "src": "resources/images/sketch-header.png"
   },
   "resources/js/app.js": {
     "file": "assets/app-CKl8NZMC.js",
