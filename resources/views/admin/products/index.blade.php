@@ -117,7 +117,7 @@
                                 </td>
                                 <td>
                                     @if($product->price)
-                                        <strong class="text-success">Rs {{ number_format($product->price, 2) }}</strong>
+                                        <strong class="text-success">Rs. {{ number_format($product->price, 2) }}</strong>
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif

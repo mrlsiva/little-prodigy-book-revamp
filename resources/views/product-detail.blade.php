@@ -14,7 +14,7 @@
     </nav>
 
     <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-4">
             <!-- Product Image -->
             <div class="card shadow">
                 <!-- Skeleton Loader for Product Detail Image -->
@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <div class="col-lg-7">
+        <div class="col-lg-8">
             <!-- Product Details -->
             <div class="ps-lg-4">
                 <h1 class="mb-3">{{ $product->name }}</h1>
@@ -37,7 +37,7 @@
                 @endif
 
                 @if($product->price)
-                    <h3 class="text-primary mb-3">Rs {{ $product->price }}</h3>
+                    <h3 class="text-primary mb-3">Rs. {{ $product->price }}</h3>
                 @endif
 
                 @if($product->description)
@@ -139,7 +139,7 @@
                                     <small class="text-muted">by {{ $relatedProduct->author }}</small>
                                 @endif
                                 @if($relatedProduct->price)
-                                    <div class="text-primary fw-bold mt-2">Rs {{ $relatedProduct->price }}</div>
+                                    <div class="text-primary fw-bold mt-2">Rs. {{ $relatedProduct->price }}</div>
                                 @endif
                                 <a href="{{ route('product.detail', $relatedProduct->id) }}" class="btn btn-sm btn-outline-primary mt-2">View Details</a>
                             </div>
