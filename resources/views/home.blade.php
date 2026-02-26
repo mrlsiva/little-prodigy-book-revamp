@@ -100,8 +100,8 @@
         @if($categories->count() > 0)
             @foreach($categories as $index => $category)
             <!-- {{ $category->name }} Series -->
-            <div class="series-section mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-4 px-3">
+            <div class="series-section mb-5 pt-3">
+                <div class="d-flex justify-content-between align-items-center mb-2 px-3">
                     <h3 class="series-title">
                         {{ $category->name }}
                     </h3>
@@ -460,8 +460,8 @@ $(document).ready(function() {
     
     // Function to generate HTML for a category section
     function generateCategoryHTML(category, index) {
-        let html = '<div class="series-section mb-5">';
-        html += '<div class="d-flex justify-content-between align-items-center mb-4 px-3">';
+        let html = '<div class="series-section mb-5 pt-3">';
+        html += '<div class="d-flex justify-content-between align-items-center mb-2 px-3">';
         html += '<h3 class="series-title">' + category.name + '</h3>';
         html += '<a href="/category/' + category.id + '/products" class="view-more-link text-dark fw-bold text-decoration-none">';
         html += 'View More <i class="fas fa-chevron-right"></i></a></div>';

@@ -38,7 +38,7 @@
         <div id="cardView" class="category-view">
             <div class="row">
                 @foreach($categories as $category)
-                    <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="col-lg-3 col-md-6 mb-4">
                         <div class="card category-card h-100 shadow-sm">
                             <img src="{{ $category->image_url }}" 
                                  class="card-img-top" 
@@ -76,14 +76,14 @@
                 @foreach($categories as $category)
                     <div class="list-group-item list-group-item-action">
                         <div class="row align-items-center">
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <img src="{{ $category->image_url }}" 
                                      class="img-fluid rounded" 
                                      alt="{{ $category->name }}" 
                                      style="height: 80px; width: 80px; object-fit: cover;"
                                      onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2Y4ZjlmYSIgc3Ryb2tlPSIjZTJlOGYwIiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOWNhMWIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+DhTwvdGV4dD48L3N2Zz4='; this.onerror=null;">
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-10">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h5 class="mb-1">{{ $category->name }}</h5>
                                     <small class="text-muted">{{ $category->products_count }} {{ Str::plural('book', $category->products_count) }}</small>
@@ -97,9 +97,9 @@
                                     <p class="mb-1 text-muted">{{ Str::limit($category->description, 150) }}</p>
                                 @endif
                             </div>
-                            <div class="col-md-2 text-end">
+                            <div class="col-md-1 text-end">
                                 <a href="{{ route('category.products', $category->id) }}" class="btn theme-btn-outline">
-                                    Browse <i class="fas fa-arrow-right ms-1"></i>
+                                    view <i class="fas fa-arrow-right ms-1"></i>
                                 </a>
                             </div>
                         </div>
@@ -120,36 +120,7 @@
     @endif
 </div>
 
-<!-- Featured Categories Section (if there are many) -->
-@if(count($categories) > 6)
-    <div class="bg-light py-5">
-        <div class="container">
-            <div class="text-center mb-4">
-                <h3 class="fw-bold">Popular Categories</h3>
-                <p class="text-muted">Our most loved book categories</p>
-            </div>
-            <div class="row">
-                @foreach($categories->take(3) as $category)
-                    <div class="col-md-4 mb-3">
-                        <div class="card border-0 bg-white h-100 shadow-sm">
-                            <div class="card-body text-center">
-                                <img src="{{ $category->image_url }}" 
-                                     class="rounded-circle mb-3" 
-                                     alt="{{ $category->name }}" 
-                                     style="height: 100px; width: 100px; object-fit: cover;">
-                                <h5 class="card-title">{{ $category->name }}</h5>
-                                <p class="text-muted">{{ $category->products_count }} books</p>
-                                <a href="{{ route('category.products', $category->id) }}" class="btn btn-sm theme-btn-outline">
-                                    Explore
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-@endif
+
 @endsection
 
 @section('scripts')
