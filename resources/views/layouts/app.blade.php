@@ -44,17 +44,52 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="{{ asset('resources/css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('build/assets/app-BCNFkpil.css') }}" rel="stylesheet">
     
     <!-- Slick Slider CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
     
-    <!-- Custom CSS -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    <!-- Fix dropdown z-index issue -->
-
+    <!-- Primary Color & Fixes -->
+    <style>
+        :root {
+            --primary-color: #e43750;
+            --secondary-color: #ffffff;
+            --primary-rgb: 228, 55, 80;
+            --secondary-rgb: 255, 255, 255;
+        }
+        
+        .theme-bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+        
+        .text-primary-theme {
+            color: var(--primary-color) !important;
+        }
+        
+        .bg-primary-theme {
+            background-color: var(--primary-color) !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: color-mix(in srgb, var(--primary-color) 90%, #000);
+            border-color: color-mix(in srgb, var(--primary-color) 90%, #000);
+        }
+        
+        /* Fix dropdown z-index issue */
+        .dropdown-menu {
+            z-index: 9 !important;
+        }
+        
+        .navbar {
+            z-index: 8 !important;
+        }
+    </style>
     
     @yield('styles')
 </head>
@@ -250,6 +285,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('build/assets/app-CKl8NZMC.js') }}"></script>
     
     @yield('scripts')
 </body>
