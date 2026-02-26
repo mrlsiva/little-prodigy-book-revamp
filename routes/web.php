@@ -19,6 +19,8 @@ Route::get('/load-more-categories', [HomeController::class, 'loadMoreCategories'
 Route::get('/category/{id}', [HomeController::class, 'categoryProducts'])->name('category.products');
 Route::get('/product/{id}', [HomeController::class, 'productDetail'])->name('product.detail');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/terms', [HomeController::class, 'terms'])->name('terms');
+Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {

@@ -108,4 +108,14 @@ class HomeController extends Controller
     {
         return view('publishing-partners');
     }
+
+    public function terms()
+    {
+        return view('terms');
+    }
+
+    public function faq()
+    {
+        return view('faq');
+    }
 }

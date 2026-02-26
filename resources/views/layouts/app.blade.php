@@ -53,6 +53,9 @@
     <!-- Custom CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
+    <!-- Fix dropdown z-index issue -->
+
+    
     @yield('styles')
 </head>
 <body>
@@ -61,11 +64,11 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center py-2">
                 <div class="top-nav-left">
-                    <i class="fas fa-shopping-cart text-white me-2"></i>
-                    <span class="text-white">0 items - ( Rs. 0 in total )</span>
+                    <i class="fab fa-whatsapp text-white me-2"></i>
+                    <span class="text-white">+91 9011524939</span>
                 </div>
                 <div class="top-nav-right">
-                    <a href="#" class="text-white text-decoration-none me-3">Login</a>
+                    <a href="{{ asset('catalouge/Our-Library-Catalogue.pdf') }}" target="_blank" class="text-white text-decoration-none me-3">Our Library Catalog</a>
                 </div>
             </div>
         </div>
@@ -92,24 +95,16 @@
                             Little Prodigy
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="littleProdigyDropdown">
-                            <li><a class="dropdown-item" href="{{ route('categories') }}">Categories</a></li>
                             <li><a class="dropdown-item" href="{{ route('about') }}">About</a></li>
                             <li><a class="dropdown-item" href="{{ route('publishing.partners') }}">Publishing Partners</a></li>
                             <li><a class="dropdown-item" href="{{ route('distributorship') }}">Distributorship</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" href="#">Ebooks – Home Education</a>
+                        <a class="nav-link text-dark" href="{{ route('categories') }}">Categories</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-dark" href="#" id="myAccountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            My Account
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="myAccountDropdown">
-                            <li><a class="dropdown-item" href="{{ route('admin.dashboard') }}">Admin Panel</a></li>
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
-                            <li><a class="dropdown-item" href="#">Orders</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="{{ route('contact') }}">Contact us</a>
                     </li>
                 </ul>
             </div>
@@ -127,7 +122,8 @@
             <div class="row">
                 <div class="col-md-4">
                     <h5 class="mb-3">Little Prodigy Books</h5>
-                    <p class="text-muted">A division of Aries Books International Group. Your trusted partner in children's education through quality literature since 2019.</p>
+                    <p class="text-muted">A Children Bookstore Specializing in books & E-learning for  3-15 year old’s providing Skill Library Books with  Puzzles, Activities and Experiments. We Strive To Connect Children And Teens To Quality Literature Through A Rich Selection Of Books.</p>
+                    <a class="navbar-brand"> <img src="{{ asset('images/ssl.gif') }}" alt="Little Prodigy Books" style="max-height: 60px;"> </a>
                 </div>
                 <div class="col-md-4">
                     <h5>Quick Links</h5>
@@ -138,13 +134,16 @@
                         <li><a href="{{ route('distributorship') }}" class="text-decoration-none text-light">Our Distributorship</a></li>
                         <li><a href="{{ asset('catalouge/Our-Library-Catalogue.pdf') }}" class="text-decoration-none text-light" target="_blank">Library Catalogue</a></li>
                         <li><a href="{{ route('contact') }}" class="text-decoration-none text-light">Contact</a></li>
+                        <li><a href="{{ route('terms') }}" class="text-decoration-none text-light">Terms & Conditions</a></li>
+                        <li><a href="{{ route('faq') }}" class="text-decoration-none text-light">FAQ</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h5>Contact Info</h5>
-                    <p class="text-muted"><i class="fas fa-envelope me-2"></i> info@littleprodigybooks.com</p>
-                    <p class="text-muted"><i class="fas fa-map-marker-alt me-2"></i> Chennai, Tamil Nadu</p>
-                    <p class="text-muted"><i class="fas fa-phone me-2"></i> +91 44 2345 6789</p>
+                    <p class="text-muted"><i class="fas fa-envelope me-2"></i> books.littleprodigy@gmail.com</p>
+                    <p class="text-muted"><i class="fas fa-phone me-2"></i> +91 8856914939, +91 9011524939</p>
+
+                    <p class="text-muted"><i class="fas fa-map-marker-alt me-2"></i> No 10,  Venkataraman street, <br> Srinivasa avenue,  Chennai - 600028</p>
                 </div>
             </div>
             <hr class="my-4">
