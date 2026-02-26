@@ -82,11 +82,6 @@
             border-color: color-mix(in srgb, var(--primary-color) 90%, #000);
         }
         
-        /* Fix dropdown z-index issue */
-        .dropdown-menu {
-            z-index: 9 !important;
-        }
-        
         .navbar {
             z-index: 8 !important;
         }
