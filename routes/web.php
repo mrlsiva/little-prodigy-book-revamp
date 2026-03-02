@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\BannerController as AdminBannerController;
@@ -22,35 +24,59 @@ Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/terms', [HomeController::class, 'terms'])->name('terms');
 Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 
-// Admin Routes
+// Default login route redirect to admin login
+Route::get('/login', function () {
+    return redirect()->route('admin.login');
+})->name('login');
+
+// Admin Authentication Routes
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+    // Guest routes (not authenticated)
+    Route::middleware('guest')->group(function () {
+        Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+        Route::post('login', [AdminAuthController::class, 'login']);
+    });
     
-    // Categories
-    Route::resource('categories', AdminCategoryController::class);
-    
-    // Products  
-    Route::resource('products', AdminProductController::class);
-    
-    // Banners
-    Route::resource('banners', AdminBannerController::class);
-    
-    // Distributors
-    Route::get('distributors', [DistributorController::class, 'adminIndex'])->name('distributors.index');
-    Route::get('distributors/create', [DistributorController::class, 'create'])->name('distributors.create');
-    Route::post('distributors', [DistributorController::class, 'store'])->name('distributors.store');
-    Route::get('distributors/{distributor}', [DistributorController::class, 'show'])->name('distributors.show');
-    Route::get('distributors/{distributor}/edit', [DistributorController::class, 'edit'])->name('distributors.edit');
-    Route::put('distributors/{distributor}', [DistributorController::class, 'update'])->name('distributors.update');
-    Route::delete('distributors/{distributor}', [DistributorController::class, 'destroy'])->name('distributors.destroy');
-    
-    // Bulk Upload
-    Route::get('bulk', [AdminBulkController::class, 'index'])->name('bulk.index');
-    Route::post('bulk/categories', [AdminBulkController::class, 'uploadCategories'])->name('bulk.categories.upload');
-    Route::post('bulk/products', [AdminBulkController::class, 'uploadProducts'])->name('bulk.products.upload');
-    Route::post('bulk/distributors', [AdminBulkController::class, 'uploadDistributors'])->name('bulk.distributors.upload');
-    Route::get('bulk/template/{type}', [AdminBulkController::class, 'downloadTemplate'])->name('bulk.template.download');
-    Route::get('bulk/export/categories', [AdminBulkController::class, 'exportCategories'])->name('bulk.export.categories');
-    Route::get('bulk/export/products', [AdminBulkController::class, 'exportProducts'])->name('bulk.export.products');
-    Route::get('bulk/export/distributors', [AdminBulkController::class, 'exportDistributors'])->name('bulk.export.distributors');
+    // Authenticated admin routes
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
+        Route::get('change-password', [AdminAuthController::class, 'showChangePasswordForm'])->name('change-password.form');
+        Route::post('change-password', [AdminAuthController::class, 'changePassword'])->name('change-password');
+        
+        Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+        
+        // User Management
+        Route::resource('users', AdminUserController::class);
+        Route::get('users/{user}/change-password', [AdminUserController::class, 'showChangePasswordForm'])->name('users.change-password');
+        Route::patch('users/{user}/change-password', [AdminUserController::class, 'changePassword'])->name('users.update-password');
+        Route::patch('users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('users.toggle-status');
+        
+        // Categories
+        Route::resource('categories', AdminCategoryController::class);
+        
+        // Products  
+        Route::resource('products', AdminProductController::class);
+        
+        // Banners
+        Route::resource('banners', AdminBannerController::class);
+        
+        // Distributors
+        Route::get('distributors', [DistributorController::class, 'adminIndex'])->name('distributors.index');
+        Route::get('distributors/create', [DistributorController::class, 'create'])->name('distributors.create');
+        Route::post('distributors', [DistributorController::class, 'store'])->name('distributors.store');
+        Route::get('distributors/{distributor}', [DistributorController::class, 'show'])->name('distributors.show');
+        Route::get('distributors/{distributor}/edit', [DistributorController::class, 'edit'])->name('distributors.edit');
+        Route::put('distributors/{distributor}', [DistributorController::class, 'update'])->name('distributors.update');
+        Route::delete('distributors/{distributor}', [DistributorController::class, 'destroy'])->name('distributors.destroy');
+        
+        // Bulk Upload
+        Route::get('bulk', [AdminBulkController::class, 'index'])->name('bulk.index');
+        Route::post('bulk/categories', [AdminBulkController::class, 'uploadCategories'])->name('bulk.categories.upload');
+        Route::post('bulk/products', [AdminBulkController::class, 'uploadProducts'])->name('bulk.products.upload');
+        Route::post('bulk/distributors', [AdminBulkController::class, 'uploadDistributors'])->name('bulk.distributors.upload');
+        Route::get('bulk/template/{type}', [AdminBulkController::class, 'downloadTemplate'])->name('bulk.template.download');
+        Route::get('bulk/export/categories', [AdminBulkController::class, 'exportCategories'])->name('bulk.export.categories');
+        Route::get('bulk/export/products', [AdminBulkController::class, 'exportProducts'])->name('bulk.export.products');
+        Route::get('bulk/export/distributors', [AdminBulkController::class, 'exportDistributors'])->name('bulk.export.distributors');
+    });
 });
